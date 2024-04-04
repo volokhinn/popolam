@@ -1,0 +1,45 @@
+.main {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 15px;
+
+    &_info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    &_center {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+
+.name {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.money {
+    font-size: 18px;
+
+    &_plus {
+        color: green;
+    }
+
+    &_minus {
+        color: red;
+    }
+}
+
+.img {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    object-fit: cover;
+}

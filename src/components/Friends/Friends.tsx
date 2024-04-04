@@ -1,10 +1,12 @@
 import React from 'react'
 import FriendsHeader from './FriendsHeader/FriendsHeader'
+import FriendsList from './FriendsList/FriendsList'
 
 const Friends = () => {
   return (
     <div>
         <FriendsHeader />
+        <FriendsList />
     </div>
   )
 }
