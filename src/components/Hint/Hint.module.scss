@@ -11,22 +11,3 @@
     font-weight: 400;
     text-transform: lowercase;
 }
-
-.btn {
-    background-color: #E52F5B;
-    padding: 20px;
-    width: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    text-decoration: none;
-    border: 1px solid #E52F5B;
-    font-size: 18px;
-    transition: .3s;
-
-    &:hover {
-        color: #E52F5B;
-        background-color: transparent;
-    }
-}

@@ -1,10 +1,12 @@
 import styles from './Hint.module.scss'
+import { Link } from 'react-router-dom'
+import Button from '../UI/Button/Button'
 
 type HintProps = {
     title?: string,
     subtitle?: string,
     buttontext?: string,
-    buttonlink?: string
+    buttonlink?: string | undefined,
 }
 
 const Hint = ({title, subtitle, buttontext, buttonlink}:HintProps) => {
@@ -12,7 +14,7 @@ const Hint = ({title, subtitle, buttontext, buttonlink}:HintProps) => {
     <div className={styles.main}>
         <h2 className={styles.title}>{title}</h2>
         <div className={styles.subtitle}>{subtitle}</div>
-        {buttontext && buttonlink ? (<a href={buttonlink} className={styles.btn}>{buttontext}</a>) : null}
+        {buttontext && buttonlink ? (<Button buttonlink={buttonlink} buttontext={buttontext} />) : null}
     </div>
   )
 }
