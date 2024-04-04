@@ -1,4 +1,3 @@
-import React from 'react'
 import FriendsHeader from './FriendsHeader/FriendsHeader'
 import FriendsList from './FriendsList/FriendsList'
 

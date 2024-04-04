@@ -19,7 +19,7 @@ const FriendItem = ({name, money, img}:FriendItemProps) => {
                     {money !== 0 ? (<div className={`${styles.money} ${money > 0 ? styles.money_plus : styles.money_minus}`}>{money} рублей</div>) : null}
                 </div>
         </div>
-        <IconButton>
+        <IconButton sx={{backgroundColor: '#fff', color: 'rgba(229, 47, 91, 1)', transition: '.3s', "&:hover": { color: "#fff", backgroundColor: 'rgba(229, 47, 91, 1)' } }}>
             <AddOutlinedIcon />
         </IconButton>
     </div>

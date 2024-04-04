@@ -1,18 +1,18 @@
-import React from 'react';
-import LeftSide from './components/LeftSide/LeftSide';
-import RightSide from './components/RightSide/RightSide';
 import styles from './App.module.scss'
-import Friends from './components/Friends/Friends';
+import AddFriend from './pages/AddFriend/AddFriend';
+import HomePage from './pages/HomePage/HomePage';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+
 
 function App() {
   return (
     <div className={styles.main}>
-      <LeftSide>
-        <Friends />
-      </LeftSide>
-      <RightSide>
-        123vh
-      </RightSide>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/add-friend" element={<AddFriend />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
