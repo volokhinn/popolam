@@ -18,7 +18,7 @@ const FriendsList = () => {
     <div className={styles.main}>
       {Array.isArray(friends) && friends.length > 0 ? (
         friends.map((friend) => (
-          <FriendItem key={friend.id} name={friend.name} img={friend.img} money={friend.money} />
+          <FriendItem key={friend.id} id={friend.id} name={friend.name} img={friend.img} money={friend.money} />
         ))
       ) : (
         null
