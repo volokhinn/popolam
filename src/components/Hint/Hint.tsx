@@ -1,5 +1,4 @@
 import styles from './Hint.module.scss'
-import { Link } from 'react-router-dom'
 import Button from '../UI/Button/Button'
 
 type HintProps = {

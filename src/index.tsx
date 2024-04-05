@@ -13,6 +13,16 @@ const theme = createTheme({
     secondary: {
       main: '#FFD5DE'
     }
+  },
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          color: "#fff",
+          backgroundColor: "#E52F5B"
+        }
+      }
+    }
   }
 })
 

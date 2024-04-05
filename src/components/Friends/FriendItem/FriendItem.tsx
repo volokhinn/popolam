@@ -5,6 +5,7 @@ import { IconButton } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
 import { removeFriend } from '../../../store/slices/friendsSlice';
+import {Tooltip} from '@mui/material';
 
 type FriendItemProps = {
   id: number;
@@ -49,8 +50,22 @@ const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
       </div>
       <div className={styles.buttons}>
         {hovered && (
+          <Tooltip disableInteractive title="Удалить из списка друзей" enterDelay={600} enterNextDelay={1000}>
+            <IconButton
+              onClick={handleRemoveFriend}
+              sx={{
+                backgroundColor: '#fff',
+                color: 'rgba(229, 47, 91, 1)',
+                transition: '.3s',
+                '&:hover': { color: '#fff', backgroundColor: 'rgba(229, 47, 91, 1)' },
+              }}
+            >
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        <Tooltip disableInteractive title="Разделить счет" enterDelay={600} enterNextDelay={1000}>
           <IconButton
-            onClick={handleRemoveFriend}
             sx={{
               backgroundColor: '#fff',
               color: 'rgba(229, 47, 91, 1)',
@@ -58,19 +73,9 @@ const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
               '&:hover': { color: '#fff', backgroundColor: 'rgba(229, 47, 91, 1)' },
             }}
           >
-            <ClearIcon />
+            <AddOutlinedIcon />
           </IconButton>
-        )}
-        <IconButton
-          sx={{
-            backgroundColor: '#fff',
-            color: 'rgba(229, 47, 91, 1)',
-            transition: '.3s',
-            '&:hover': { color: '#fff', backgroundColor: 'rgba(229, 47, 91, 1)' },
-          }}
-        >
-          <AddOutlinedIcon />
-        </IconButton>
+        </Tooltip>
       </div>
     </div>
   );
