@@ -21,7 +21,7 @@ const FriendsList = () => {
           <FriendItem key={friend.id} name={friend.name} img={friend.img} money={friend.money} />
         ))
       ) : (
-        <p>No friends found</p>
+        null
       )}
     </div>
   );

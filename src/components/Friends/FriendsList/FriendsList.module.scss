@@ -9,17 +9,22 @@
     overflow-y: auto;
 
     background-image: url('../../../assets/logo.svg');
+    background-position: 50% 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
 
     &::-webkit-scrollbar {
         width: 10px;
         height: 10px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background: rgba(229, 47, 91, 1);
-        border-radius: 60px;
-      }
-      &::-webkit-scrollbar-track {
-        background: rgba(255, 213, 222, 1);
-        border-radius: 60px;
-      }
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(229, 47, 91, 1);
+      border-radius: 60px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 213, 222, 1);
+      border-radius: 60px;
+    }
 }
