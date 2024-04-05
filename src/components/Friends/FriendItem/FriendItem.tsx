@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux'; // Импортируем useDispatch
+import { useDispatch } from 'react-redux';
 import styles from './FriendItem.module.scss';
 import { IconButton } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
-import { removeFriend } from '../../../store/slices/friendsSlice'; // Импортируем removeFriend из слайса
+import { removeFriend } from '../../../store/slices/friendsSlice';
 
 type FriendItemProps = {
   id: number;
@@ -15,7 +15,7 @@ type FriendItemProps = {
 
 const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
   const [hovered, setHovered] = useState(false);
-  const dispatch = useDispatch(); // Получаем функцию dispatch
+  const dispatch = useDispatch();
 
   const renderUserImage = () => {
     if (img) {
@@ -27,7 +27,7 @@ const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
   };
 
   const handleRemoveFriend = () => {
-    dispatch(removeFriend(id)); // Вызываем removeFriend через dispatch
+    dispatch(removeFriend(id));
   };
 
   return (
@@ -50,7 +50,7 @@ const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
       <div className={styles.buttons}>
         {hovered && (
           <IconButton
-            onClick={handleRemoveFriend} // Используем функцию handleRemoveFriend для удаления друга
+            onClick={handleRemoveFriend}
             sx={{
               backgroundColor: '#fff',
               color: 'rgba(229, 47, 91, 1)',

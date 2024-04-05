@@ -8,6 +8,7 @@ import styles from './FriendsHeader.module.scss'
 const FriendsHeader = () => {
   const location = useLocation();
   const isNotMainPage = location.pathname !== "/";
+  const isAddFriendPage = location.pathname === "/add-friend";
   
   return (
     <div className={styles.main}>
@@ -20,11 +21,17 @@ const FriendsHeader = () => {
       )}
       <div className={styles.link}>Мои друзья</div>
       <Link to="/history" className={styles.link}>История</Link>
-      <Link to="/add-friend">
-        <IconButton sx={{backgroundColor: 'rgba(229, 47, 91, 1)', color: '#fff', border: '1px solid rgba(229, 47, 91, 1)', transition: '.3s', "&:hover": { color: "rgba(229, 47, 91, 1)", backgroundColor: '#fff' } }}>
+      {isAddFriendPage ? (
+        <IconButton disabled sx={{backgroundColor: 'rgba(229, 47, 91, 1)', color: '#fff', border: '1px solid rgba(229, 47, 91, 1)', transition: '.3s', "&:hover": { color: "rgba(229, 47, 91, 1)", backgroundColor: '#fff' } }}>
             <AddOutlinedIcon />
         </IconButton>
-      </Link>
+      ) : (
+        <Link to="/add-friend">
+          <IconButton sx={{backgroundColor: 'rgba(229, 47, 91, 1)', color: '#fff', border: '1px solid rgba(229, 47, 91, 1)', transition: '.3s', "&:hover": { color: "rgba(229, 47, 91, 1)", backgroundColor: '#fff' } }}>
+              <AddOutlinedIcon />
+          </IconButton>
+        </Link>
+      )}
     </div>
   )
 }
