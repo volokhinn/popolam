@@ -1,16 +1,16 @@
 import LeftSide from "../../components/LeftSide/LeftSide"
 import RightSide from "../../components/RightSide/RightSide"
-import Friends from "../../components/Friends/Friends"
 import FriendsHeader from "../../components/Friends/FriendsHeader/FriendsHeader"
 import Hint from "../../components/Hint/Hint"
 import BillForm from "../../components/BillForm/BillForm"
+import FriendsList from "../../components/Friends/FriendsList/FriendsList"
 
 const HomePage = () => {
   return (
     <>
         <LeftSide>
             <FriendsHeader />
-            <Friends />
+            <FriendsList />
         </LeftSide>
         <RightSide>
           <BillForm />

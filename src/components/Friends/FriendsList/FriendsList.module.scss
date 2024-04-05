@@ -3,10 +3,10 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-
-    overflow-y: scroll;
-    max-height: 79vh;
+    height: 79vh;
     padding-right: 20px;
+
+    overflow-y: auto;
 
     background-image: url('../../../assets/logo.svg');
 

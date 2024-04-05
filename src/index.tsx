@@ -21,7 +21,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <ThemeProvider theme={theme}>
-    <Container maxWidth="xl" className='container'>
+    <Container maxWidth="xl">
       <App />
     </Container>
   </ThemeProvider>
