@@ -15,7 +15,7 @@ const Button = ({buttonlink, buttontext, onClick}: ButtonProps) => {
             onClick: onClick,
         };
         if (buttonlink) {
-            return <Link to={buttonlink} {...commonProps}>{buttontext}</Link>;
+            return <Link to={buttonlink}{...commonProps}>{buttontext}</Link>;
         } else {
             return <button {...commonProps}>{buttontext}</button>;
         }
