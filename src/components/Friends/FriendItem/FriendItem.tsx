@@ -1,22 +1,22 @@
+// FriendItem.tsx
+
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import styles from './FriendItem.module.scss';
 import { IconButton } from '@mui/material';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
-import { removeFriend } from '../../../store/slices/friendsSlice';
-import {Tooltip} from '@mui/material';
+import { Tooltip } from '@mui/material';
 
 type FriendItemProps = {
   id: number;
   name: string;
   money: number;
   img?: string;
+  onRemoveFriend: (id: number) => void;
 };
 
-const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
+const FriendItem = ({ id, name, money, img, onRemoveFriend }: FriendItemProps) => {
   const [hovered, setHovered] = useState(false);
-  const dispatch = useDispatch();
 
   const renderUserImage = () => {
     if (img) {
@@ -25,10 +25,6 @@ const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
       const initials = name.split(' ').map((word) => word.charAt(0)).join('');
       return <div className={styles.initials}>{initials}</div>;
     }
-  };
-
-  const handleRemoveFriend = () => {
-    dispatch(removeFriend(id));
   };
 
   return (
@@ -52,7 +48,7 @@ const FriendItem = ({ id, name, money, img }: FriendItemProps) => {
         {hovered && (
           <Tooltip disableInteractive title="Удалить из списка друзей" enterDelay={600} enterNextDelay={1000}>
             <IconButton
-              onClick={handleRemoveFriend}
+              onClick={() => onRemoveFriend(id)}
               sx={{
                 backgroundColor: '#fff',
                 color: 'rgba(229, 47, 91, 1)',
