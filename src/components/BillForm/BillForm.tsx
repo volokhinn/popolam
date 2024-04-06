@@ -36,14 +36,8 @@ const BillForm = () => {
   };
 
   useEffect(() => {
-    if (!selectedFriends.length) {
-      setMyExpense(totalAmount || '0');
-    }
-  }, [totalAmount, selectedFriends]);
-
-  useEffect(() => {
     if (splitEqually) {
-      const equalAmount = selectedFriends.length > 0 ? (+totalAmount / (selectedFriends.length + 1)).toFixed(2) : '';
+      const equalAmount = (+totalAmount / (selectedFriends.length + 1)).toFixed(2);
       const newExpenses = selectedFriends.reduce((acc, friend) => {
         acc[friend.id] = equalAmount;
         return acc;
