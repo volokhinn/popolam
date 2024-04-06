@@ -45,7 +45,7 @@ const FriendItem = ({ id, name, money, img, isSelected, onRemoveFriend, onAddFri
         </div>
       </div>
       <div className={styles.buttons}>
-        {hovered && (
+        {hovered && !isSelected && (
           <Tooltip disableInteractive title="Удалить из списка друзей" enterDelay={600} enterNextDelay={1000}>
             <IconButton
               onClick={() => onRemoveFriend(id)}
@@ -60,9 +60,15 @@ const FriendItem = ({ id, name, money, img, isSelected, onRemoveFriend, onAddFri
             </IconButton>
           </Tooltip>
         )}
-        <Tooltip disableInteractive title="Разделить счет" enterDelay={600} enterNextDelay={1000}>
+        <Tooltip
+          disableInteractive
+          title={isSelected ? "Друг выбран для разделения счета" : "Разделить счет"}
+          enterDelay={600}
+          enterNextDelay={1000}
+        >
           <IconButton
             onClick={() => onAddFriendToBill(id)}
+            disabled={isSelected}
             sx={{
               backgroundColor: '#fff',
               color: 'rgba(229, 47, 91, 1)',

@@ -22,3 +22,27 @@
 .btn {
     margin-top: 30px;
 }
+
+.friends {
+    display: flex;
+    gap: 15px;
+}
+
+.friend {
+    border: 1px solid red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    background-color: #E52F5B;
+    color: #fff;
+    width: fit-content;
+    padding: 10px 30px;
+    border-radius: 15px;
+
+    &_empty {
+        border: 3px dotted #ffbacb;
+        width: 150px;
+        border-radius: 15px;
+    }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl, IconButton } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectSelectedFriends, removeSelectedFriend } from '../../store/slices/billSlice';
 import styles from './BillForm.module.scss';
@@ -70,16 +71,34 @@ const BillForm = () => {
             label="Разделить пополам"
           />
         )}
-        {selectedFriends.length > 0 ? (
-          selectedFriends.map((friend) => (
-            <div key={friend.id}>
-              {friend.name}
-              <button onClick={() => handleDeselectFriend(friend.id)}>Отменить выбор</button>
-            </div>
-          ))
-        ) : (
-          null
-        )}
+        <div className={styles.friends}>
+            {selectedFriends.length > 0 ? (
+            selectedFriends.map((friend) => (
+                <div key={friend.id} className={styles.friend}>
+                    {friend.name}
+                    <IconButton
+                    onClick={() => handleDeselectFriend(friend.id)}
+                    sx={{
+                        color: '#fff',
+                        transition: '.3s',
+                    }}
+                    >
+                        <ClearIcon />
+                    </IconButton>
+                </div>
+            ))
+            ) : (
+            null
+            )}
+            <div className={styles.friend_empty}></div>
+        </div>
+        <TextField
+          id="total-amount"
+          label="Общая сумма"
+          value={totalAmount}
+          onChange={handleTotalAmountChange}
+          type='number'
+        />
         {selectedFriends.length > 0 ? (
           selectedFriends.map((friend) => (
             <TextField
@@ -94,13 +113,6 @@ const BillForm = () => {
         ) : (
           null
         )}
-        <TextField
-          id="total-amount"
-          label="Общая сумма"
-          value={totalAmount}
-          onChange={handleTotalAmountChange}
-          type='number'
-        />
         <TextField
           id="my-expense"
           label="Я потратил"
