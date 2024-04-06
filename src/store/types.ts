@@ -1,6 +1,12 @@
 export interface RootState {
-    friends: FriendsState;
+  friends: {
+    friends: Friend[];
+  };
+  bill: {
+    selectedFriends: Friend[];
+  };
 }
+
 
 export interface FriendsState {
     friends: Friend[];

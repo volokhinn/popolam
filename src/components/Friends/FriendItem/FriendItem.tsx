@@ -1,5 +1,3 @@
-// FriendItem.tsx
-
 import React, { useState } from 'react';
 import styles from './FriendItem.module.scss';
 import { IconButton } from '@mui/material';
@@ -12,10 +10,12 @@ type FriendItemProps = {
   name: string;
   money: number;
   img?: string;
+  isSelected: boolean;
   onRemoveFriend: (id: number) => void;
+  onAddFriendToBill: (id: number) => void;
 };
 
-const FriendItem = ({ id, name, money, img, onRemoveFriend }: FriendItemProps) => {
+const FriendItem = ({ id, name, money, img, isSelected, onRemoveFriend, onAddFriendToBill }: FriendItemProps) => {
   const [hovered, setHovered] = useState(false);
 
   const renderUserImage = () => {
@@ -29,7 +29,7 @@ const FriendItem = ({ id, name, money, img, onRemoveFriend }: FriendItemProps) =
 
   return (
     <div
-      className={styles.main}
+      className={`${styles.main} ${isSelected ? styles.selected : ''}`}
       onMouseOver={() => setHovered(true)}
       onMouseOut={() => setHovered(false)}
     >
@@ -62,6 +62,7 @@ const FriendItem = ({ id, name, money, img, onRemoveFriend }: FriendItemProps) =
         )}
         <Tooltip disableInteractive title="Разделить счет" enterDelay={600} enterNextDelay={1000}>
           <IconButton
+            onClick={() => onAddFriendToBill(id)}
             sx={{
               backgroundColor: '#fff',
               color: 'rgba(229, 47, 91, 1)',

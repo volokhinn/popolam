@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Provider } from 'react-redux'; // импорт Provider
-import store from './store/store'; // импорт созданного вами store
+import { Provider } from 'react-redux';
+import {store} from './store/store';
 import styles from './App.module.scss';
 import AddFriend from './pages/AddFriend/AddFriend';
 import HomePage from './pages/HomePage/HomePage';

@@ -1,46 +1,136 @@
-import React from 'react'
-import styles from './BillForm.module.scss'
-import { TextField, Switch, FormControlLabel, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from '@mui/material'
-import Button from '../UI/Button/Button'
+import React, { useState, useEffect } from 'react';
+import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectSelectedFriends, removeSelectedFriend } from '../../store/slices/billSlice';
+import styles from './BillForm.module.scss';
+import { SelectChangeEvent } from '@mui/material/Select';
+import Button from '../UI/Button/Button';
 
 const BillForm = () => {
-    const [age, setAge] = React.useState('');
+  const selectedFriends = useSelector(selectSelectedFriends);
+  const dispatch = useDispatch();
+  const [splitEqually, setSplitEqually] = useState(false);
+  const [totalAmount, setTotalAmount] = useState('');
+  const [expenses, setExpenses] = useState<{ [key: number]: string }>({});
+  const [myExpense, setMyExpense] = useState('0');
+  const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
 
-    const handleChange = (event: SelectChangeEvent) => {
-        setAge(event.target.value);
-    };
+  const handleDeselectFriend = (id: number) => {
+    dispatch(removeSelectedFriend(id));
+  };
+
+  const handleExpenseChange = (friendId: number, value: string) => {
+    setExpenses((prevState) => ({
+      ...prevState,
+      [friendId]: value,
+    }));
+  };
+
+  const handleTotalAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTotalAmount(event.target.value);
+  };
+
+  const handlePayerChange = (event: SelectChangeEvent<string>) => {
+    setSelectedFriendId(event.target.value !== '0' ? parseInt(event.target.value) : null);
+  };
+
+  useEffect(() => {
+    if (!selectedFriends.length) {
+      setMyExpense(totalAmount || '0');
+    }
+  }, [totalAmount, selectedFriends]);
+
+  useEffect(() => {
+    if (splitEqually) {
+      const equalAmount = selectedFriends.length > 0 ? (+totalAmount / (selectedFriends.length + 1)).toFixed(2) : '';
+      const newExpenses = selectedFriends.reduce((acc, friend) => {
+        acc[friend.id] = equalAmount;
+        return acc;
+      }, {} as { [key: number]: string });
+      setExpenses(newExpenses);
+      setMyExpense(equalAmount);
+    }
+  }, [splitEqually, selectedFriends, totalAmount]);
+
+  useEffect(() => {
+    if (!splitEqually) {
+      setExpenses({});
+      setMyExpense('');
+    }
+  }, [splitEqually]);
+
 
   return (
     <div className={styles.main}>
-        <h2 className={styles.title}>Разделить счет с друзьями</h2>
-        <form className={styles.form}>
-        <FormControlLabel control={<Switch defaultChecked />} label="Разделить пополам" />
-                <TextField id="outlined-multiline-flexible" label="Сумма" />
-                <TextField id="outlined-multiline-flexible" label="Имя потратил" />
-                <TextField id="outlined-multiline-flexible" label="Имя потратил" />
-                <TextField id="outlined-multiline-flexible" label="Вы потратили" />
-
-                <FormControl variant="outlined">
-                <InputLabel id="demo-simple-select-standard-label">Кто заплатит за счет?</InputLabel>
-                <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={age}
-                label="Кто заплатит за счет?"
-                onChange={handleChange}
-                sx={{ minWidth: 320 }}
-                >
-                    <MenuItem value={10}>Я</MenuItem>
-                    <MenuItem value={20}>Имя</MenuItem>
-                    <MenuItem value={30}>Имя</MenuItem>
-                </Select>
-                <div className={styles.btn}>
-                    <Button buttontext="Добавить"/>
-                </div>
-                </FormControl>
-        </form>
+      <h2 className={styles.title}>Разделить счет с друзьями</h2>
+      <form className={styles.form}>
+        {selectedFriends.length > 0 && totalAmount !== '' && (
+          <FormControlLabel
+            control={<Switch checked={splitEqually} onChange={() => setSplitEqually(!splitEqually)} />}
+            label="Разделить пополам"
+          />
+        )}
+        {selectedFriends.length > 0 ? (
+          selectedFriends.map((friend) => (
+            <div key={friend.id}>
+              {friend.name}
+              <button onClick={() => handleDeselectFriend(friend.id)}>Отменить выбор</button>
+            </div>
+          ))
+        ) : (
+          null
+        )}
+        {selectedFriends.length > 0 ? (
+          selectedFriends.map((friend) => (
+            <TextField
+              key={`expense-${friend.id}`}
+              label={`${friend.name} потратил`}
+              value={expenses[friend.id] || ''}
+              onChange={(e) => handleExpenseChange(friend.id, e.target.value)}
+              type='number'
+              disabled={splitEqually}
+            />
+          ))
+        ) : (
+          null
+        )}
+        <TextField
+          id="total-amount"
+          label="Общая сумма"
+          value={totalAmount}
+          onChange={handleTotalAmountChange}
+          type='number'
+        />
+        <TextField
+          id="my-expense"
+          label="Я потратил"
+          value={myExpense}
+          onChange={(e) => setMyExpense(e.target.value)}
+          type='number'
+          disabled={splitEqually}
+        />
+        <FormControl variant="outlined">
+          <InputLabel id="payer-label">Кто заплатит за счет?</InputLabel>
+          <Select
+            labelId="payer-label"
+            id="payer-select"
+            value={selectedFriendId !== null ? selectedFriendId.toString() : '0'}
+            onChange={handlePayerChange}
+            label="Кто заплатит за счет?"
+            disabled={splitEqually}
+          >
+            <MenuItem value="0">Я</MenuItem>
+            {selectedFriends.map((friend) => (
+              <MenuItem key={`friend-${friend.id}`} value={friend.id.toString()}>{friend.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <div className={styles.btn}>
+          <Button buttontext="Добавить" />
+        </div>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default BillForm
+export default BillForm;
