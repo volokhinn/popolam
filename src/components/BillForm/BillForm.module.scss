@@ -26,6 +26,7 @@
 .friends {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .friend {
@@ -44,5 +45,6 @@
         border: 3px dotted #ffbacb;
         width: 150px;
         border-radius: 15px;
+        height: 60px;
     }
 }

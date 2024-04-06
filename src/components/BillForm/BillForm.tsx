@@ -60,12 +60,11 @@ const BillForm = () => {
     }
   }, [splitEqually]);
 
-
   return (
     <div className={styles.main}>
       <h2 className={styles.title}>Разделить счет с друзьями</h2>
       <form className={styles.form}>
-        {selectedFriends.length > 0 && totalAmount !== '' && (
+        {totalAmount && (
           <FormControlLabel
             control={<Switch checked={splitEqually} onChange={() => setSplitEqually(!splitEqually)} />}
             label="Разделить пополам"
@@ -129,7 +128,6 @@ const BillForm = () => {
             value={selectedFriendId !== null ? selectedFriendId.toString() : '0'}
             onChange={handlePayerChange}
             label="Кто заплатит за счет?"
-            disabled={splitEqually}
           >
             <MenuItem value="0">Я</MenuItem>
             {selectedFriends.map((friend) => (
