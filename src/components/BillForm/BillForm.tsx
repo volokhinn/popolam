@@ -6,6 +6,7 @@ import { selectSelectedFriends, removeSelectedFriend } from '../../store/slices/
 import styles from './BillForm.module.scss';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Button from '../UI/Button/Button';
+import { updateFriendMoney } from '../../store/slices/friendsSlice';
 
 const BillForm = () => {
   const selectedFriends = useSelector(selectSelectedFriends);
@@ -33,6 +34,13 @@ const BillForm = () => {
 
   const handlePayerChange = (event: SelectChangeEvent<string>) => {
     setSelectedFriendId(event.target.value !== '0' ? parseInt(event.target.value) : null);
+  };
+
+  const addToHistory = () => {
+    const amount = parseFloat(myExpense);
+    const paidByMe = selectedFriendId === null;
+    const friendIds = selectedFriends.map(friend => friend.id);
+    dispatch(updateFriendMoney({ selectedFriendId, friendIds, amount, paidByMe }));
   };
 
   useEffect(() => {
@@ -65,25 +73,25 @@ const BillForm = () => {
           />
         )}
         <div className={styles.friends}>
-            {selectedFriends.length > 0 ? (
+          {selectedFriends.length > 0 ? (
             selectedFriends.map((friend) => (
-                <div key={friend.id} className={styles.friend}>
-                    {friend.name}
-                    <IconButton
-                    onClick={() => handleDeselectFriend(friend.id)}
-                    sx={{
-                        color: '#fff',
-                        transition: '.3s',
-                    }}
-                    >
-                        <ClearIcon />
-                    </IconButton>
-                </div>
+              <div key={friend.id} className={styles.friend}>
+                {friend.name}
+                <IconButton
+                  onClick={() => handleDeselectFriend(friend.id)}
+                  sx={{
+                    color: '#fff',
+                    transition: '.3s',
+                  }}
+                >
+                  <ClearIcon />
+                </IconButton>
+              </div>
             ))
-            ) : (
+          ) : (
             null
-            )}
-            <div className={styles.friend_empty}></div>
+          )}
+          <div className={styles.friend_empty}></div>
         </div>
         <TextField
           id="total-amount"
@@ -130,7 +138,7 @@ const BillForm = () => {
           </Select>
         </FormControl>
         <div className={styles.btn}>
-          <Button buttontext="Добавить" />
+          <Button buttontext="Добавить" onClick={addToHistory} />
         </div>
       </form>
     </div>

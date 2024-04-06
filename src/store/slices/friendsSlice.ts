@@ -42,11 +42,25 @@ const friendsSlice = createSlice({
       const friendsFromStorage = localStorage.getItem('friends');
       state.friends = friendsFromStorage ? JSON.parse(friendsFromStorage) : [];
     },
+    updateFriendMoney: (state, action: PayloadAction<{ selectedFriendId: number | null, friendIds: number[]; amount: number; paidByMe: boolean }>) => {
+      const { selectedFriendId, friendIds, amount, paidByMe } = action.payload;
+      const sign = paidByMe ? 1 : -1;
+    
+      friendIds.forEach(friendId => {
+        if (!paidByMe && friendId !== selectedFriendId) {
+          return;
+        }
+        const friend = state.friends.find(friend => friend.id === friendId);
+        if (friend) {
+          friend.money += sign * amount;
+        }
+      });
+    
+      localStorage.setItem('friends', JSON.stringify(state.friends));
+    }    
   }
 });
 
-export const { addFriend, removeFriend, toggleSelectedFriend, fetchFriends } = friendsSlice.actions;
-
-export const selectSelectedFriendIds = (state: RootState) => state.friends.selectedFriendIds;
+export const { addFriend, removeFriend, toggleSelectedFriend, fetchFriends, updateFriendMoney } = friendsSlice.actions;
 
 export default friendsSlice.reducer;
