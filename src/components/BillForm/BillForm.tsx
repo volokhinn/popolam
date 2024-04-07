@@ -2,20 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl, IconButton } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectSelectedFriends, removeSelectedFriend } from '../../store/slices/billSlice';
+import { selectSelectedFriends, removeSelectedFriend, clearSelectedFriends } from '../../store/slices/billSlice';
 import styles from './BillForm.module.scss';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Button from '../UI/Button/Button';
 import { updateFriendMoney } from '../../store/slices/friendsSlice';
+import Snack from '../UI/Snack/Snack';
 
 const BillForm = () => {
   const selectedFriends = useSelector(selectSelectedFriends);
   const dispatch = useDispatch();
+  
   const [splitEqually, setSplitEqually] = useState(false);
   const [totalAmount, setTotalAmount] = useState('');
   const [expenses, setExpenses] = useState<{ [key: number]: string }>({});
   const [myExpense, setMyExpense] = useState('0');
   const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const handleDeselectFriend = (id: number) => {
     dispatch(removeSelectedFriend(id));
@@ -41,6 +44,13 @@ const BillForm = () => {
     const paidByMe = selectedFriendId === null;
     const friendIds = selectedFriends.map(friend => friend.id);
     dispatch(updateFriendMoney({ selectedFriendId, friendIds, amount, paidByMe }));
+    setMyExpense('');
+    setExpenses({});
+    setTotalAmount('');
+    setSplitEqually(false);
+    setSelectedFriendId(null);
+    dispatch(clearSelectedFriends());
+    setOpenSnackBar(true);
   };
 
   useEffect(() => {
@@ -141,6 +151,7 @@ const BillForm = () => {
           <Button buttontext="Добавить" onClick={addToHistory} />
         </div>
       </form>
+      <Snack title="Счет успешно разделен" openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} />
     </div>
   );
 };

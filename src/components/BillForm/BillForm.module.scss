@@ -34,11 +34,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    text-transform: capitalize;
     gap: 15px;
     background-color: #E52F5B;
     color: #fff;
     width: fit-content;
-    padding: 10px 30px;
+    padding: 0 10px;
     border-radius: 15px;
 
     &_empty {
