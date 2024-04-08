@@ -23,20 +23,28 @@ const BillForm = () => {
   const [myExpenseError, setMyExpenseError] = useState<string>('');
   const [friendExpensesErrors, setFriendExpensesErrors] = useState<{ [key: number]: string }>({});
 
+
   const handleDeselectFriend = (id: number) => {
     dispatch(removeSelectedFriend(id));
   };
 
+  useEffect(() => {
+    updateTotalAmount();
+  }, [expenses, myExpense]);
+  
   const handleExpenseChange = (friendId: number, value: string) => {
     setExpenses((prevState) => ({
       ...prevState,
       [friendId]: value,
     }));
+  
+    updateTotalAmount();
   };
-
+  
   const handleTotalAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTotalAmount(event.target.value);
   };
+  
 
   const handlePayerChange = (event: SelectChangeEvent<string>) => {
     setSelectedFriendId(event.target.value !== '0' ? parseInt(event.target.value) : null);
@@ -86,17 +94,35 @@ const BillForm = () => {
     setTimeout(() => dispatch(clearSelectedFriends()), 3000)
   };
 
+  const updateTotalAmount = () => {
+    let total = 0;
+  
+    Object.values(expenses).forEach((expense) => {
+      const value = parseFloat(expense);
+      if (!isNaN(value)) {
+        total += value;
+      }
+    });
+  
+    const myExpenseValue = parseFloat(myExpense);
+    if (!isNaN(myExpenseValue)) {
+      total += myExpenseValue;
+    }
+  
+    setTotalAmount(total.toFixed(0));
+  };  
+  
   useEffect(() => {
     if (splitEqually) {
       const equalAmount = (+totalAmount / (selectedFriends.length + 1)).toFixed(2);
+      setMyExpense(equalAmount);
       const newExpenses = selectedFriends.reduce((acc, friend) => {
         acc[friend.id] = equalAmount;
         return acc;
       }, {} as { [key: number]: string });
       setExpenses(newExpenses);
-      setMyExpense(equalAmount);
     }
-  }, [splitEqually, selectedFriends, totalAmount]);
+  }, [splitEqually, selectedFriends, totalAmount]);  
 
   useEffect(() => {
     if (!splitEqually) {
@@ -144,7 +170,7 @@ const BillForm = () => {
           type='number'
         />
         {totalAmountError && <Alert severity="error">{totalAmountError}</Alert>}
-        {selectedFriends.length > 0 ? (
+        {selectedFriends.length > 0 && (
           selectedFriends.map((friend) => (
             <TextField
               key={`expense-${friend.id}`}
@@ -155,8 +181,6 @@ const BillForm = () => {
               disabled={splitEqually}
             />
           ))
-        ) : (
-          null
         )}
           {Object.keys(friendExpensesErrors).map((key) => (
             <Alert severity="error" key={key}>{friendExpensesErrors[parseInt(key)]}</Alert>
@@ -165,7 +189,10 @@ const BillForm = () => {
           id="my-expense"
           label="Я потратил"
           value={myExpense}
-          onChange={(e) => setMyExpense(e.target.value)}
+          onChange={(e) => {
+            setMyExpense(e.target.value);
+            updateTotalAmount();
+          }}
           type='number'
           disabled={splitEqually}
         />
