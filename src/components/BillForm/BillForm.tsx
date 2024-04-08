@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl, IconButton } from '@mui/material';
+import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl, IconButton, Alert } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectSelectedFriends, removeSelectedFriend, clearSelectedFriends } from '../../store/slices/billSlice';
@@ -19,6 +19,9 @@ const BillForm = () => {
   const [myExpense, setMyExpense] = useState('0');
   const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
   const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [totalAmountError, setTotalAmountError] = useState<string>('');
+  const [myExpenseError, setMyExpenseError] = useState<string>('');
+  const [friendExpensesErrors, setFriendExpensesErrors] = useState<{ [key: number]: string }>({});
 
   const handleDeselectFriend = (id: number) => {
     dispatch(removeSelectedFriend(id));
@@ -43,6 +46,36 @@ const BillForm = () => {
     const amount = parseFloat(myExpense);
     const paidByMe = selectedFriendId === null;
     const friendIds = selectedFriends.map(friend => friend.id);
+
+    setTotalAmountError('');
+    setMyExpenseError('');
+    setFriendExpensesErrors({});
+
+    if (!totalAmount.trim()) {
+      setTotalAmountError('Введите общую сумму');
+      return;
+    }
+
+    if (splitEqually && (parseFloat(totalAmount) % selectedFriends.length !== 0)) {
+      setTotalAmountError('Общая сумма должна быть кратной количеству выбранных друзей');
+      return;
+    }
+
+    selectedFriends.forEach((friend) => {
+      const expense = expenses[friend.id];
+      if (!expense || !expense.trim()) {
+        setFriendExpensesErrors((prevState) => ({
+          ...prevState,
+          [friend.id]: `Введите расход для ${friend.name}`,
+        }));
+      }
+    });
+
+    if (selectedFriendId === null && !myExpense.trim()) {
+      setMyExpenseError('Введите вашу сумму расходов');
+      return;
+    }
+
     dispatch(updateFriendMoney({ selectedFriendId, friendIds, amount, paidByMe }));
     setMyExpense('');
     setExpenses({});
@@ -110,6 +143,7 @@ const BillForm = () => {
           onChange={handleTotalAmountChange}
           type='number'
         />
+        {totalAmountError && <Alert severity="error">{totalAmountError}</Alert>}
         {selectedFriends.length > 0 ? (
           selectedFriends.map((friend) => (
             <TextField
@@ -124,6 +158,9 @@ const BillForm = () => {
         ) : (
           null
         )}
+          {Object.keys(friendExpensesErrors).map((key) => (
+            <Alert severity="error" key={key}>{friendExpensesErrors[parseInt(key)]}</Alert>
+          ))}
         <TextField
           id="my-expense"
           label="Я потратил"
@@ -132,6 +169,7 @@ const BillForm = () => {
           type='number'
           disabled={splitEqually}
         />
+        {myExpenseError && <Alert severity="error">{myExpenseError}</Alert>}
         <FormControl variant="outlined">
           <InputLabel id="payer-label">Кто заплатит за счет?</InputLabel>
           <Select

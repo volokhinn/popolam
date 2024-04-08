@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addFriend } from '../../../store/slices/friendsSlice';
-import { TextField } from '@mui/material';
+import { TextField, Alert } from '@mui/material';
 import Button from '../../UI/Button/Button';
 import styles from './AddFriendForm.module.scss';
 import Snack from '../../UI/Snack/Snack';
@@ -34,14 +34,16 @@ const AddFriendForm = () => {
         label="Имя друга"
         sx={{ width: '100%' }}
       />
-      {showError && <div className={styles.error}>Длина имени должна быть больше 2 символов</div>}
+      {showError && <Alert severity="error">Длина имени должна быть больше 2 символов</Alert>}
       <TextField
         value={img}
         onChange={(e) => setImg(e.target.value)}
         label="Ссылка на фото (необязательно)"
         sx={{ width: '100%' }}
       />
-      <Button buttontext="Добавить" onClick={handleAddFriend} />
+      <div className={styles.btn}>
+        <Button buttontext="Добавить" onClick={handleAddFriend} />
+      </div>
       <Snack title="Друг успешно добавлен" openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} />
     </div>
   );
