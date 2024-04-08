@@ -10,13 +10,20 @@ const AddFriendForm = () => {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [img, setImg] = useState('');
+  const [showError, setShowError] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const handleAddFriend = () => {
-    dispatch(addFriend({ id: Date.now(), name, img, money: 0 }));
-    setName('');
-    setImg('');
-    setOpenSnackBar(true)
+    if (name.length > 1) {
+      dispatch(addFriend({ id: Date.now(), name, img, money: 0 }));
+      setName('');
+      setImg('');
+      setOpenSnackBar(true);
+      setShowError(false);
+    }
+    else {
+      setShowError(true);
+    }
   };
 
   return (
@@ -27,6 +34,7 @@ const AddFriendForm = () => {
         label="Имя друга"
         sx={{ width: '100%' }}
       />
+      {showError && <div className={styles.error}>Длина имени должна быть больше 2 символов</div>}
       <TextField
         value={img}
         onChange={(e) => setImg(e.target.value)}

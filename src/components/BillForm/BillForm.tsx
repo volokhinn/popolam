@@ -49,8 +49,8 @@ const BillForm = () => {
     setTotalAmount('');
     setSplitEqually(false);
     setSelectedFriendId(null);
-    dispatch(clearSelectedFriends());
     setOpenSnackBar(true);
+    setTimeout(() => dispatch(clearSelectedFriends()), 3000)
   };
 
   useEffect(() => {
