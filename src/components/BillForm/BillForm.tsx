@@ -57,13 +57,8 @@ const BillForm = () => {
     setMyExpenseError('');
     setFriendExpensesErrors({});
   
-    if (!totalAmount.trim()) {
+    if (!totalAmount.trim() || totalAmount === '0') {
       setTotalAmountError('Введите общую сумму');
-      return;
-    }
-  
-    if (splitEqually && (parseFloat(totalAmount) % selectedFriends.length !== 0)) {
-      setTotalAmountError('Общая сумма должна быть кратной количеству выбранных друзей');
       return;
     }
   
@@ -97,9 +92,11 @@ const BillForm = () => {
       friendNames: selectedFriends.map((friend) => friend.name),
       details: selectedFriends.map((friend) => ({
         friendName: friend.name,
+        friendImg: friend.img,
         amount: parseFloat(expenses[friend.id] || '0'),
       })),
       myAmount: myExpense,
+      paidBy: selectedFriendId,
     };
 
     dispatch(addTransaction(transaction));

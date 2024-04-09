@@ -8,15 +8,23 @@ export interface RootState {
   };
 }
 
+export interface TransactionDetails {
+  friendName: string;
+  friendImg?: string;
+  amount: number;
+}
+
 export interface Transaction {
   date: string;
   totalAmount: number;
   friendNames: string[];
   details: {
     friendName: string;
+    friendImg?: string;
     amount: number;
   }[];
   myAmount: string;
+  paidBy: number | null;
 }
 
 export interface FriendsState {

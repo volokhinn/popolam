@@ -20,7 +20,7 @@ const AddFriendForm = () => {
     }
 
     setShowError(false);
-    dispatch(addFriend({ id: Date.now(), name, img, money: 0 }));
+    dispatch(addFriend({ id: Date.now(), name: name[0].toUpperCase() + name.slice(1), img, money: 0 }));
     setName('');
     setImg('');
     setOpenSnackBar(true);

@@ -16,6 +16,7 @@ const HistoryList = () => {
           friendNames={transaction.friendNames}
           details={transaction.details}
           myAmount={transaction.myAmount}
+          paidBy={transaction.paidBy}
         />
       ))}
     </div>

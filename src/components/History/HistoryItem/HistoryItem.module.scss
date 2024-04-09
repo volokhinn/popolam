@@ -33,4 +33,50 @@
 .details {
     margin-top: 15px;
     font-size: 16px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.imgs {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+
+    > div:not(:first-of-type) {
+        margin-left: -10px;
+    }
+
+    > div:last-of-type {
+        margin-right: 5px;
+    }
+
+    &_wrapper {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.img {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.initials {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    background: radial-gradient(circle, #E52F5B 0%, #ff7593 90%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    pointer-events: none;
+    user-select: none;
 }
