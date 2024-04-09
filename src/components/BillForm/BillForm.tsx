@@ -54,21 +54,21 @@ const BillForm = () => {
     const amount = parseFloat(myExpense);
     const paidByMe = selectedFriendId === null;
     const friendIds = selectedFriends.map(friend => friend.id);
-
+  
     setTotalAmountError('');
     setMyExpenseError('');
     setFriendExpensesErrors({});
-
+  
     if (!totalAmount.trim()) {
       setTotalAmountError('Введите общую сумму');
       return;
     }
-
+  
     if (splitEqually && (parseFloat(totalAmount) % selectedFriends.length !== 0)) {
       setTotalAmountError('Общая сумма должна быть кратной количеству выбранных друзей');
       return;
     }
-
+  
     selectedFriends.forEach((friend) => {
       const expense = expenses[friend.id];
       if (!expense || !expense.trim()) {
@@ -78,21 +78,30 @@ const BillForm = () => {
         }));
       }
     });
-
-    if (selectedFriendId === null && !myExpense.trim()) {
+  
+    if (paidByMe && !myExpense.trim()) { // Если оплата идет за счет владельца счета
       setMyExpenseError('Введите вашу сумму расходов');
       return;
     }
-
-    dispatch(updateFriendMoney({ selectedFriendId, friendIds, amount, paidByMe }));
+  
+    if (paidByMe) {
+      selectedFriends.forEach((friend) => {
+        const friendExpense = parseFloat(expenses[friend.id]);
+        dispatch(updateFriendMoney({ selectedFriendId: friend.id, friendIds, amount: -friendExpense, paidByMe: false }));
+      });
+    } else {
+      dispatch(updateFriendMoney({ selectedFriendId, friendIds, amount, paidByMe }));
+    }
+  
     setMyExpense('');
     setExpenses({});
     setTotalAmount('');
     setSplitEqually(false);
     setSelectedFriendId(null);
     setOpenSnackBar(true);
-    setTimeout(() => dispatch(clearSelectedFriends()), 3000)
+    setTimeout(() => dispatch(clearSelectedFriends()), 3000);
   };
+  
 
   const updateTotalAmount = () => {
     let total = 0;
@@ -163,6 +172,7 @@ const BillForm = () => {
           <div className={styles.friend_empty}></div>
         </div>
         <TextField
+          disabled
           id="total-amount"
           label="Общая сумма"
           value={totalAmount}
