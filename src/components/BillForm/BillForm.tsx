@@ -102,8 +102,6 @@ const BillForm = () => {
       myAmount: myExpense,
     };
 
-    console.log(transaction);
-
     dispatch(addTransaction(transaction));
   
     setMyExpense('');
@@ -184,7 +182,6 @@ const BillForm = () => {
           <div className={styles.friend_empty}></div>
         </div>
         <TextField
-          disabled
           id="total-amount"
           label="Общая сумма"
           value={totalAmount}

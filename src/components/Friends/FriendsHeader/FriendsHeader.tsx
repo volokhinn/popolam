@@ -19,7 +19,6 @@ const FriendsHeader = () => {
           </IconButton>
         </Link>
       )}
-      <div className={styles.link}>Мои друзья</div>
       <Link to="/history" className={styles.link}>История</Link>
       {isAddFriendPage ? (
         <IconButton sx={{backgroundColor: 'rgba(229, 47, 91, 1)', color: '#fff', border: '1px solid rgba(229, 47, 91, 1)', pointerEvents: 'none' }}>

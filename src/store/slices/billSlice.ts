@@ -27,7 +27,7 @@ export const billSlice = createSlice({
     },
     addTransaction: (state, action: PayloadAction<Transaction>) => {
       state.transactions.push(action.payload);
-      localStorage.setItem('bills', JSON.stringify(state.transactions));
+      localStorage.setItem('transactions', JSON.stringify(state.transactions));
     },
   },
 });
@@ -36,6 +36,13 @@ export const { addSelectedFriend, removeSelectedFriend, clearSelectedFriends, ad
 
 export const selectSelectedFriends = (state: RootState) => state.bill.selectedFriends;
 
-export const selectTransactions = (state: RootState) => state.bill.transactions;
+export const selectTransactions = (state: RootState): Transaction[] => {
+  const localStorageTransactions = localStorage.getItem('transactions');
+  if (localStorageTransactions) {
+    return JSON.parse(localStorageTransactions);
+  } else {
+    return state.bill.transactions;
+  }
+};
 
 export default billSlice.reducer;

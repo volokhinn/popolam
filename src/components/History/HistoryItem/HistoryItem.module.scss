@@ -1,0 +1,36 @@
+.main {
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item {
+    border: 1px solid #dddddd;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.date {
+    font-size: 14px;
+}
+
+.names {
+    font-size: 18px;
+}
+
+.money {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.details {
+    margin-top: 15px;
+    font-size: 16px;
+}
