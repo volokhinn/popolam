@@ -5,6 +5,7 @@ import {store} from './store/store';
 import styles from './App.module.scss';
 import AddFriend from './pages/AddFriend/AddFriend';
 import HomePage from './pages/HomePage/HomePage';
+import HistoryPage from './pages/HistoryPage/HistoryPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/add-friend" element={<AddFriend />} />
+            <Route path="/history" element={<HistoryPage />} />
           </Routes>
         </BrowserRouter>
       </div>

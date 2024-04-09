@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl, IconButton, Alert } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectSelectedFriends, removeSelectedFriend, clearSelectedFriends } from '../../store/slices/billSlice';
+import { selectSelectedFriends, removeSelectedFriend, clearSelectedFriends, addTransaction } from '../../store/slices/billSlice';
 import styles from './BillForm.module.scss';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Button from '../UI/Button/Button';
@@ -22,7 +22,6 @@ const BillForm = () => {
   const [totalAmountError, setTotalAmountError] = useState<string>('');
   const [myExpenseError, setMyExpenseError] = useState<string>('');
   const [friendExpensesErrors, setFriendExpensesErrors] = useState<{ [key: number]: string }>({});
-
 
   const handleDeselectFriend = (id: number) => {
     dispatch(removeSelectedFriend(id));
@@ -44,7 +43,6 @@ const BillForm = () => {
   const handleTotalAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTotalAmount(event.target.value);
   };
-  
 
   const handlePayerChange = (event: SelectChangeEvent<string>) => {
     setSelectedFriendId(event.target.value !== '0' ? parseInt(event.target.value) : null);
@@ -79,7 +77,7 @@ const BillForm = () => {
       }
     });
   
-    if (paidByMe && !myExpense.trim()) { // Если оплата идет за счет владельца счета
+    if (paidByMe && !myExpense.trim()) {
       setMyExpenseError('Введите вашу сумму расходов');
       return;
     }
@@ -92,6 +90,21 @@ const BillForm = () => {
     } else {
       dispatch(updateFriendMoney({ selectedFriendId, friendIds, amount, paidByMe }));
     }
+
+    const transaction = {
+      date: new Date().toLocaleDateString('ru-RU'),
+      totalAmount: parseFloat(totalAmount),
+      friendNames: selectedFriends.map((friend) => friend.name),
+      details: selectedFriends.map((friend) => ({
+        friendName: friend.name,
+        amount: parseFloat(expenses[friend.id] || '0'),
+      })),
+      myAmount: myExpense,
+    };
+
+    console.log(transaction);
+
+    dispatch(addTransaction(transaction));
   
     setMyExpense('');
     setExpenses({});
@@ -102,7 +115,6 @@ const BillForm = () => {
     setTimeout(() => dispatch(clearSelectedFriends()), 3000);
   };
   
-
   const updateTotalAmount = () => {
     let total = 0;
   
