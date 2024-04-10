@@ -15,7 +15,7 @@ export interface TransactionDetails {
 }
 
 export interface Transaction {
-  date: string;
+  date: Date;
   totalAmount: number;
   friendNames: string[];
   details: {

@@ -92,7 +92,7 @@ const BillForm = () => {
     }
 
     const transaction = {
-      date: new Date().toLocaleDateString('ru-RU'),
+      date: new Date(),
       totalAmount: parseFloat(totalAmount),
       friendNames: selectedFriends.map((friend) => friend.name),
       details: selectedFriends.map((friend) => ({

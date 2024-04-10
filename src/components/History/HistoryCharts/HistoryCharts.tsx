@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import styles from './HistoryCharts.module.scss';
 import { selectTransactions } from '../../../store/slices/billSlice';
 import { Transaction } from '../../../store/types';
+import { format } from 'date-fns';
 
 type HistoryTitleProps = {
   title: string
@@ -27,16 +28,15 @@ function HistoryPieChart({transactions}:ChartProps) {
 }
 
 function HistoryLineChart({ transactions }: ChartProps) {
-  // Создаем массив дат из объектов транзакций
-  const dates = transactions.map(transaction => new Date(transaction.date).getMonth());
+  const dates = transactions.map(transaction => new Date(transaction.date));
   const totalAmount = transactions.map(transaction => transaction.totalAmount);
 
   return (
     <LineChart
-      xAxis={[{data: dates}]}
+      xAxis={[{data: dates, valueFormatter: (date) => format(date, 'dd.MM')}]}
       series={[
         {
-          data: totalAmount
+          data: totalAmount,
         },
       ]}
       width={500}

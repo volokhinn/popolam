@@ -3,9 +3,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { IconButton, Tooltip } from '@mui/material';
 import { useState } from 'react';
 import { TransactionDetails } from '../../../store/types';
+import { format } from 'date-fns';
 
 interface HistoryItemProps {
-  date: string;
+  date: Date;
   totalAmount: number;
   friendNames: string[];
   details: TransactionDetails[];
@@ -52,7 +53,7 @@ const HistoryItem = ({ date, totalAmount, friendNames, details, myAmount, paidBy
     <div className={styles.item}>
       <div className={styles.main}>
         <div className={styles.info}>
-          <div className={styles.date}>{date}</div>
+        <div className={styles.date}>{format(date, 'dd.MM.yyyy')}</div>
           <div className={styles.names}>Я, {renderFriendNames(friendNames)}</div>
           <div className={styles.imgs}>
             {renderFriendImages(details)}
