@@ -8,7 +8,6 @@ import styles from './FriendsHeader.module.scss'
 const FriendsHeader = () => {
   const location = useLocation();
   const isNotMainPage = location.pathname !== "/";
-  const isAddFriendPage = location.pathname === "/add-friend";
   
   return (
     <div className={styles.main}>

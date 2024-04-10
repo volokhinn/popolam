@@ -76,12 +76,20 @@ const HistoryItem = ({ date, totalAmount, friendNames, details, myAmount, paidBy
       {openDetails && (
         <div className={styles.details}>
           {details.map((detail, index) => (
-            <div key={index}>
-              {detail.friendName}: {detail.amount} рублей
+            <div className={styles.friend_wrapper} key={index}>
+              {detail.friendImg ? (
+                <img src={detail.friendImg} alt={detail.friendName} />
+              ) : (
+                <div className={styles.initials}>{detail.friendName.split(' ').map((name: string) => name.charAt(0)).join('')}</div>
+              )}
+              <div className={styles.friend_info}>
+                <div className={styles.friend_name}>{detail.friendName}</div>
+                <div className={styles.friend_money}>{detail.amount} рублей</div>
+              </div>
             </div>
           ))}
           <div>Я потратил: {+myAmount} рублей</div>
-          <div>За счет заплатил: {paidBy === null ? 'Я' : paidBy}</div>
+          <div>За счет заплатил: <span style={{fontWeight: '500'}}>{paidBy === null ? 'Я' : paidBy}</span></div>
         </div>
       )}
     </div>
