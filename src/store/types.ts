@@ -24,7 +24,7 @@ export interface Transaction {
     amount: number;
   }[];
   myAmount: string;
-  paidBy: number | null;
+  paidBy: string | null;
 }
 
 export interface FriendsState {

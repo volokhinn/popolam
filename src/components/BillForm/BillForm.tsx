@@ -18,10 +18,12 @@ const BillForm = () => {
   const [expenses, setExpenses] = useState<{ [key: number]: string }>({});
   const [myExpense, setMyExpense] = useState('0');
   const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
+  const [selectedFriendName, setSelectedFriendName] = useState<string | null>(null);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const [totalAmountError, setTotalAmountError] = useState<string>('');
   const [myExpenseError, setMyExpenseError] = useState<string>('');
   const [friendExpensesErrors, setFriendExpensesErrors] = useState<{ [key: number]: string }>({});
+  
 
   const handleDeselectFriend = (id: number) => {
     dispatch(removeSelectedFriend(id));
@@ -45,8 +47,11 @@ const BillForm = () => {
   };
 
   const handlePayerChange = (event: SelectChangeEvent<string>) => {
-    setSelectedFriendId(event.target.value !== '0' ? parseInt(event.target.value) : null);
-  };
+    const selectedFriendId = event.target.value !== '0' ? parseInt(event.target.value) : null;
+    const selectedFriend = selectedFriends.find(friend => friend.id === selectedFriendId);
+    setSelectedFriendId(selectedFriendId);
+    setSelectedFriendName(selectedFriend ? selectedFriend.name : null);
+  };  
 
   const addToHistory = () => {
     const amount = parseFloat(myExpense);
@@ -96,8 +101,8 @@ const BillForm = () => {
         amount: parseFloat(expenses[friend.id] || '0'),
       })),
       myAmount: myExpense,
-      paidBy: selectedFriendId,
-    };
+      paidBy: selectedFriendName,
+    };    
 
     dispatch(addTransaction(transaction));
   

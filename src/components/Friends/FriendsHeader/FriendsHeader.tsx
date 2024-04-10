@@ -20,11 +20,7 @@ const FriendsHeader = () => {
         </Link>
       )}
       <Link to="/history" className={styles.link}>История</Link>
-      {isAddFriendPage ? (
-        <IconButton sx={{backgroundColor: 'rgba(229, 47, 91, 1)', color: '#fff', border: '1px solid rgba(229, 47, 91, 1)', pointerEvents: 'none' }}>
-            <AddOutlinedIcon />
-        </IconButton>
-      ) : (
+      {!isNotMainPage && (
         <Link to="/add-friend">
           <IconButton sx={{backgroundColor: 'rgba(229, 47, 91, 1)', color: '#fff', border: '1px solid rgba(229, 47, 91, 1)', transition: '.3s', "&:hover": { color: "rgba(229, 47, 91, 1)", backgroundColor: '#fff' } }}>
               <AddOutlinedIcon />

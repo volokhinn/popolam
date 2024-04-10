@@ -10,7 +10,7 @@ interface HistoryItemProps {
   friendNames: string[];
   details: TransactionDetails[];
   myAmount: string;
-  paidBy: number | null,
+  paidBy: string | null,
 }
 
 const HistoryItem = ({ date, totalAmount, friendNames, details, myAmount, paidBy }: HistoryItemProps) => {
@@ -53,7 +53,7 @@ const HistoryItem = ({ date, totalAmount, friendNames, details, myAmount, paidBy
       <div className={styles.main}>
         <div className={styles.info}>
           <div className={styles.date}>{date}</div>
-          <div className={styles.names}>{renderFriendNames(friendNames)}</div>
+          <div className={styles.names}>Я, {renderFriendNames(friendNames)}</div>
           <div className={styles.imgs}>
             {renderFriendImages(details)}
           </div>
