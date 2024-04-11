@@ -28,26 +28,33 @@ function HistoryPieChart({transactions}:ChartProps) {
 }
 
 function HistoryLineChart({ transactions }: ChartProps) {
-  const dates = transactions.map(transaction => new Date(transaction.date));
-  const totalAmount = transactions.map(transaction => transaction.totalAmount);
+  const totalAmountByDate: { [key: string]: number } = {};
+
+  transactions.forEach(transaction => {
+    const date = format(new Date(transaction.date), 'MM.dd')
+    const amount = transaction.totalAmount;
+    totalAmountByDate[date] = (totalAmountByDate[date] || 0) + amount;
+  });
+  
+  const dates = Object.keys(totalAmountByDate).map(date => new Date(date));
+  const totalAmount = Object.values(totalAmountByDate);
 
   return (
     <LineChart
-      xAxis={[{data: dates, valueFormatter: (date) => format(date, 'dd.MM')}]}
+      xAxis={[{ data: dates, valueFormatter: (date) => format(new Date(date), 'MM.dd') }]}
       series={[
         {
           data: totalAmount,
         },
       ]}
-      width={500}
-      height={300}
+      width={600}
+      height={400}
     />
-  )
+  );
 }
 
 const HistoryCharts = () => {
   const transactions = useSelector(selectTransactions);
-  console.log(transactions);
 
   return (
     <div>

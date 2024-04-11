@@ -37,12 +37,12 @@ export const { addSelectedFriend, removeSelectedFriend, clearSelectedFriends, ad
 export const selectSelectedFriends = (state: RootState) => state.bill.selectedFriends;
 
 export const selectTransactions = (state: RootState): Transaction[] => {
-  const localStorageTransactions = localStorage.getItem('transactions');
-  if (localStorageTransactions) {
-    return JSON.parse(localStorageTransactions);
-  } else {
-    return state.bill.transactions;
-  }
+  return state.bill.transactions;
 };
+
+const localStorageTransactions = localStorage.getItem('transactions');
+if (localStorageTransactions) {
+  initialState.transactions = JSON.parse(localStorageTransactions);
+}
 
 export default billSlice.reducer;
