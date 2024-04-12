@@ -43,13 +43,13 @@ function HistoryLineChart({ transactions }: ChartProps) {
   
   return (
     <LineChart
-      xAxis={[{ data: chartData.map(data => data.date), valueFormatter: (date) => format(date, 'MM.dd') }]}
+      xAxis={[{ min: chartData.map(data => data.date)[0], max: chartData.map(data => data.date).pop(), data: chartData.map(data => data.date), valueFormatter: (date) => format(date, 'MM.dd') }]}
       series={[
         {
           data: chartData.map(data => data.totalAmount),
         },
       ]}
-      width={1600}
+      width={400}
       height={400}
       colors={['#E52F5B']}
     />
