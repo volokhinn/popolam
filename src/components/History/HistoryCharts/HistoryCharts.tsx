@@ -36,19 +36,22 @@ function HistoryLineChart({ transactions }: ChartProps) {
     totalAmountByDate[date] = (totalAmountByDate[date] || 0) + amount;
   });
   
-  const dates = Object.keys(totalAmountByDate).map(date => new Date(date));
-  const totalAmount = Object.values(totalAmountByDate);
-
+  const chartData = Object.keys(totalAmountByDate).map(date => ({
+    date: new Date(date),
+    totalAmount: totalAmountByDate[date]
+  }));
+  
   return (
     <LineChart
-      xAxis={[{ data: dates, valueFormatter: (date) => format(new Date(date), 'MM.dd') }]}
+      xAxis={[{ data: chartData.map(data => data.date), valueFormatter: (date) => format(date, 'MM.dd') }]}
       series={[
         {
-          data: totalAmount,
+          data: chartData.map(data => data.totalAmount),
         },
       ]}
-      width={600}
+      width={1600}
       height={400}
+      colors={['#E52F5B']}
     />
   );
 }
@@ -59,7 +62,9 @@ const HistoryCharts = () => {
   return (
     <div>
       <HistoryTitle title='123' />
-      <HistoryLineChart transactions={transactions} />
+      <div className={styles.linechart}>
+        <HistoryLineChart transactions={transactions} />
+      </div>
       <div>HistoryCharts</div>
     </div>
   );
