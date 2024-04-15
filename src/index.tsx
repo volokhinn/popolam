@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { createTheme, ThemeProvider } from '@mui/material';
-import {Container} from '@mui/material';
+import { Container } from '@mui/material';
 import './index.css'
+import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
 
 const theme = createTheme({
   palette: {
@@ -26,13 +27,27 @@ const theme = createTheme({
   }
 })
 
+const {REACT_APP_CLERK_PUBLISHABLE_KEY} = process.env
+ 
+if (!REACT_APP_CLERK_PUBLISHABLE_KEY) {
+  throw new Error("Missing Publishable Key")
+}
+
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <ThemeProvider theme={theme}>
-    <Container maxWidth="xl">
-      <App />
-    </Container>
-  </ThemeProvider>
+  <ClerkProvider publishableKey={REACT_APP_CLERK_PUBLISHABLE_KEY}>
+    <ThemeProvider theme={theme}>
+      <SignedIn>
+        <Container maxWidth="xl">
+          <App />
+        </Container>
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </ThemeProvider>
+  </ClerkProvider>
 );
