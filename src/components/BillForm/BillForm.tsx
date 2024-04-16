@@ -127,6 +127,13 @@ const BillForm = () => {
       setTimeout(() => dispatch(clearSelectedFriends()), 3000);
     } catch (error) {
       console.error(error);
+      setMyExpense('');
+      setExpenses({});
+      setTotalAmount('');
+      setSplitEqually(false);
+      setSelectedFriendId(null);
+      setOpenSnackBar(true);
+      setTimeout(() => dispatch(clearSelectedFriends()), 3000);
     }
   };
   

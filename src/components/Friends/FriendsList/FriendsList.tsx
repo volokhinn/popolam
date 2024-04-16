@@ -5,6 +5,7 @@ import FriendItem from '../FriendItem/FriendItem';
 import Snack from '../../UI/Snack/Snack';
 import { selectSelectedFriends, addSelectedFriend } from '../../../store/slices/billSlice';
 import supabase from '../../../supabase';
+import { Skeleton, Stack } from '@mui/material';
 
 const FriendsList = ({friendsList}: any) => {
   const [openSnackBar, setOpenSnackBar] = useState(false);
@@ -28,6 +29,8 @@ const FriendsList = ({friendsList}: any) => {
     
     fetchFriendsFromSupabase();
   }, []);
+
+  console.log(friends);
 
   const handleRemoveFriend = async (id: number) => {
     try {
@@ -53,6 +56,15 @@ const FriendsList = ({friendsList}: any) => {
 
   return (
     <div className={styles.main}>
+      {friends.length === 0 && (
+        <Stack spacing={2}>
+          <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
+          <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
+          <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
+          <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
+          <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
+        </Stack>
+      )}
       {Array.isArray(friends) && friends.length > 0 ? (
         friends.map((friend) => (
           <FriendItem
