@@ -1,40 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import LeftSide from "../../components/LeftSide/LeftSide";
 import RightSide from "../../components/RightSide/RightSide";
 import FriendsHeader from "../../components/Friends/FriendsHeader/FriendsHeader";
 import Hint from "../../components/Hint/Hint";
 import BillForm from "../../components/BillForm/BillForm";
 import FriendsList from "../../components/Friends/FriendsList/FriendsList";
-import { fetchFriends } from "../../store/slices/friendsSlice";
 import { selectSelectedFriends } from "../../store/slices/billSlice";
+import supabase from '../../supabase';
+import { useSelector } from 'react-redux';
 
 const HomePage = () => {
-  const dispatch = useDispatch();
+  const [friends, setFriends] = useState<any[]>([]);
+
   const selectedFriends = useSelector(selectSelectedFriends);
 
-  useEffect(() => {
-    dispatch(fetchFriends());
-  }, [dispatch]);
-
-  const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
+  console.log(selectedFriends);
 
   useEffect(() => {
-    if (selectedFriends.length > 0) {
-      setSelectedFriendId(selectedFriends[0].id);
-    } else {
-      setSelectedFriendId(null);
+    async function fetchFriendsFromSupabase() {
+      try {
+        const { data, error } = await supabase.from('friends').select('*');
+        if (error) {
+          throw error;
+        }
+        setFriends(data || []);
+      } catch (error) {
+        console.error('Error fetching friends', error);
+      }
     }
-  }, [selectedFriends]);
+    
+    fetchFriendsFromSupabase();
+  }, []);
 
   return (
     <>
       <LeftSide>
         <FriendsHeader />
-        <FriendsList />
+        <FriendsList friendsList={friends} />
       </LeftSide>
       <RightSide>
-        {selectedFriendId !== null ? (
+        {selectedFriends.length > 0 ? (
           <BillForm />
         ) : (
           <Hint title='Разделить счет' subtitle="Выберите друга из списка слева, с кем вы хотите разделить счет" />

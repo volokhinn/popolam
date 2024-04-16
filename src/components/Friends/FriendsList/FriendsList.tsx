@@ -1,25 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './FriendsList.module.scss';
 import FriendItem from '../FriendItem/FriendItem';
-import { RootState } from '../../../store/types';
-import { fetchFriends, removeFriend } from '../../../store/slices/friendsSlice';
 import Snack from '../../UI/Snack/Snack';
 import { selectSelectedFriends, addSelectedFriend } from '../../../store/slices/billSlice';
+import supabase from '../../../supabase';
 
-const FriendsList = () => {
-  const friends = useSelector((state: RootState) => state.friends.friends);
-  const selectedFriends = useSelector(selectSelectedFriends);
-  const dispatch = useDispatch();
+const FriendsList = ({friendsList}: any) => {
   const [openSnackBar, setOpenSnackBar] = useState(false);
+  const dispatch = useDispatch();
+  const selectedFriends = useSelector(selectSelectedFriends);
+  const [friends, setFriends] = useState<any[]>([]);
 
   useEffect(() => {
-    dispatch(fetchFriends());
-  }, [dispatch]);
+    const fetchFriendsFromSupabase = async () => {
 
-  const handleRemoveFriend = (id: number) => {
-    dispatch(removeFriend(id));
-    setOpenSnackBar(true);
+      try {
+        const { data, error } = await supabase.from('friends').select('*');
+        if (error) {
+          throw error;
+        }
+        setFriends(data || null);
+      } catch (error) {
+        console.error('Error fetching friends:');
+      }
+    }
+    
+    fetchFriendsFromSupabase();
+  }, []);
+
+  const handleRemoveFriend = async (id: number) => {
+    try {
+
+      const { error } = await supabase.from('friends').delete().eq('id', id);
+      if (error) {
+        throw error;
+      }
+
+      setFriends(prevFriends => prevFriends.filter(friend => friend.id !== id));
+      setOpenSnackBar(true);
+    } catch (error) {
+      console.error('Error removing friend:');
+    }
   };
 
   const handleAddFriendToBill = (id: number) => {

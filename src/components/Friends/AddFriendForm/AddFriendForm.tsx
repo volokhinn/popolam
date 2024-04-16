@@ -1,30 +1,43 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addFriend } from '../../../store/slices/friendsSlice';
+import { useState } from 'react';
 import { TextField, Alert } from '@mui/material';
 import Button from '../../UI/Button/Button';
 import styles from './AddFriendForm.module.scss';
 import Snack from '../../UI/Snack/Snack';
 
+import supabase from '../../../supabase';
+
 const AddFriendForm = () => {
-  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [img, setImg] = useState('');
   const [showError, setShowError] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
-  const handleAddFriend = () => {
-    if (name.length < 1 || name.length > 10) {
+  const handleAddFriend = async () => {
+    if (name.length < 2 || name.length > 10) {
       setShowError(true);
-      return
+      return;
     }
+  
+    try {
+      setShowError(false);
+      const { error } = await supabase.from('friends').insert([
+        { name: name[0].toUpperCase() + name.slice(1), img, money: 0 }
+      ]);
 
-    setShowError(false);
-    dispatch(addFriend({ id: Date.now(), name: name[0].toUpperCase() + name.slice(1), img, money: 0 }));
-    setName('');
-    setImg('');
-    setOpenSnackBar(true);
-  };
+      console.log('Friend added');
+      
+      if (error) {
+        console.error('Error adding friend:', error.message);
+        return;
+      }
+      
+      setName('');
+      setImg('');
+      setOpenSnackBar(true);
+    } catch (error) {
+      console.error('Error adding friend:');
+    }
+  };  
 
   return (
     <div className={styles.main}>

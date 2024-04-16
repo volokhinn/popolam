@@ -25,24 +25,15 @@ export const billSlice = createSlice({
     clearSelectedFriends: (state) => {
       state.selectedFriends = [];
     },
-    addTransaction: (state, action: PayloadAction<Transaction>) => {
-      state.transactions.push(action.payload);
-      localStorage.setItem('transactions', JSON.stringify(state.transactions));
-    },
   },
 });
 
-export const { addSelectedFriend, removeSelectedFriend, clearSelectedFriends, addTransaction } = billSlice.actions;
+export const { addSelectedFriend, removeSelectedFriend, clearSelectedFriends } = billSlice.actions;
 
 export const selectSelectedFriends = (state: RootState) => state.bill.selectedFriends;
 
 export const selectTransactions = (state: RootState): Transaction[] => {
   return state.bill.transactions;
 };
-
-const localStorageTransactions = localStorage.getItem('transactions');
-if (localStorageTransactions) {
-  initialState.transactions = JSON.parse(localStorageTransactions);
-}
 
 export default billSlice.reducer;

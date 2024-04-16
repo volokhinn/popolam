@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { TextField, Switch, FormControlLabel, Select, MenuItem, InputLabel, FormControl, IconButton, Alert } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectSelectedFriends, removeSelectedFriend, clearSelectedFriends, addTransaction } from '../../store/slices/billSlice';
+import { selectSelectedFriends, removeSelectedFriend, clearSelectedFriends } from '../../store/slices/billSlice';
 import styles from './BillForm.module.scss';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Button from '../UI/Button/Button';
-import { updateFriendMoney } from '../../store/slices/friendsSlice';
 import Snack from '../UI/Snack/Snack';
+import supabase from '../../supabase';
 
 const BillForm = () => {
   const selectedFriends = useSelector(selectSelectedFriends);
@@ -23,7 +23,6 @@ const BillForm = () => {
   const [totalAmountError, setTotalAmountError] = useState<string>('');
   const [myExpenseError, setMyExpenseError] = useState<string>('');
   const [friendExpensesErrors, setFriendExpensesErrors] = useState<{ [key: number]: string }>({});
-  
 
   const handleDeselectFriend = (id: number) => {
     dispatch(removeSelectedFriend(id));
@@ -53,67 +52,85 @@ const BillForm = () => {
     setSelectedFriendName(selectedFriend ? selectedFriend.name : null);
   };  
 
-  const addToHistory = () => {
-    const amount = parseFloat(myExpense);
-    const paidByMe = selectedFriendId === null;
-    const friendIds = selectedFriends.map(friend => friend.id);
-  
-    setTotalAmountError('');
-    setMyExpenseError('');
-    setFriendExpensesErrors({});
-  
-    if (!totalAmount.trim() || totalAmount === '0') {
-      setTotalAmountError('Введите общую сумму');
-      return;
-    }
-  
-    selectedFriends.forEach((friend) => {
-      const expense = expenses[friend.id];
-      if (!expense || !expense.trim()) {
-        setFriendExpensesErrors((prevState) => ({
-          ...prevState,
-          [friend.id]: `Введите расход для ${friend.name}`,
-        }));
+  const addToHistory = async () => {
+    try {
+      setTotalAmountError('');
+      setMyExpenseError('');
+      setFriendExpensesErrors({});
+
+      if (!totalAmount.trim() || totalAmount === '0') {
+        setTotalAmountError('Введите общую сумму');
+        return;
       }
-    });
-  
-    if (paidByMe && !myExpense.trim()) {
-      setMyExpenseError('Введите вашу сумму расходов');
-      return;
-    }
-  
-    if (paidByMe) {
       selectedFriends.forEach((friend) => {
-        const friendExpense = parseFloat(expenses[friend.id]);
-        dispatch(updateFriendMoney({ selectedFriendId: friend.id, friendIds, amount: -friendExpense, paidByMe: false }));
+        const expense = expenses[friend.id];
+        if (!expense || !expense.trim()) {
+          setFriendExpensesErrors((prevState) => ({
+            ...prevState,
+            [friend.id]: `Введите расход для ${friend.name}`,
+          }));
+        }
       });
-    } else {
-      dispatch(updateFriendMoney({ selectedFriendId, friendIds, amount, paidByMe }));
+
+      if (!myExpense.trim()) {
+        setMyExpenseError('Введите вашу сумму расходов');
+        return;
+      }
+
+      const transactionData = {
+        date: new Date(),
+        totalAmount: parseFloat(totalAmount),
+        friendNames: selectedFriends.map((friend) => friend.name),
+        details: selectedFriends.map((friend) => ({
+          friendName: friend.name,
+          friendImg: friend.img,
+          amount: parseFloat(expenses[friend.id] || '0'),
+        })),
+        myAmount: myExpense,
+        paidBy: selectedFriendName,
+      };
+    
+      const { error } = await supabase.from('transactions').insert([transactionData]);
+      if (error) {
+        throw error;
+      }
+    
+      await Promise.all(selectedFriends.map(async (friend) => {
+        const friendExpense = parseFloat(expenses[friend.id]);
+        const amount = selectedFriendId === friend.id ? parseFloat(myExpense) : -friendExpense;
+        const paidByMe = selectedFriendId === null;
+
+        if (amount !== 0) {
+          const { error: friendUpdateError } = await supabase
+            .from('friends')
+            .update({ money: friend.money + amount })
+            .eq('id', friend.id);
+          if (friendUpdateError) {
+            throw friendUpdateError;
+          }
+        }
+    
+        const { error: transactionError } = await supabase
+          .from('friend_transactions')
+          .insert([{ friend_id: friend.id, amount, paidBy: paidByMe }]);
+        if (transactionError) {
+          throw transactionError;
+        }
+      }));
+    
+      setMyExpense('');
+      setExpenses({});
+      setTotalAmount('');
+      setSplitEqually(false);
+      setSelectedFriendId(null);
+      setOpenSnackBar(true);
+      setTimeout(() => dispatch(clearSelectedFriends()), 3000);
+    } catch (error) {
+      console.error(error);
     }
-
-    const transaction = {
-      date: new Date(),
-      totalAmount: parseFloat(totalAmount),
-      friendNames: selectedFriends.map((friend) => friend.name),
-      details: selectedFriends.map((friend) => ({
-        friendName: friend.name,
-        friendImg: friend.img,
-        amount: parseFloat(expenses[friend.id] || '0'),
-      })),
-      myAmount: myExpense,
-      paidBy: selectedFriendName,
-    };    
-
-    dispatch(addTransaction(transaction));
-  
-    setMyExpense('');
-    setExpenses({});
-    setTotalAmount('');
-    setSplitEqually(false);
-    setSelectedFriendId(null);
-    setOpenSnackBar(true);
-    setTimeout(() => dispatch(clearSelectedFriends()), 3000);
   };
+  
+  
   
   const updateTotalAmount = () => {
     let total = 0;

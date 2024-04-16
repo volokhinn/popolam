@@ -4,7 +4,7 @@ import { SignedIn, UserButton, useUser } from "@clerk/clerk-react";
 const RightSide = ({children}:any) => {
 
   const user = useUser();
-  console.log(user);
+  
   return (
     <>
       <div className={styles.right}>

@@ -21,14 +21,6 @@ const friendsSlice = createSlice({
   name: 'friends',
   initialState,
   reducers: {
-    addFriend: (state, action: PayloadAction<Friend>) => {
-      state.friends.push(action.payload);
-      localStorage.setItem('friends', JSON.stringify(state.friends));
-    },
-    removeFriend: (state, action: PayloadAction<number>) => {
-      state.friends = state.friends.filter(friend => friend.id !== action.payload);
-      localStorage.setItem('friends', JSON.stringify(state.friends));
-    },
     toggleSelectedFriend: (state, action: PayloadAction<number>) => {
       const index = state.selectedFriendIds.indexOf(action.payload);
       if (index === -1) {
@@ -36,10 +28,6 @@ const friendsSlice = createSlice({
       } else {
         state.selectedFriendIds.splice(index, 1);
       }
-    },
-    fetchFriends: (state) => {
-      const friendsFromStorage = localStorage.getItem('friends');
-      state.friends = friendsFromStorage ? JSON.parse(friendsFromStorage) : [];
     },
     updateFriendMoney: (state, action: PayloadAction<{ selectedFriendId: number | null, friendIds: number[]; amount: number; paidByMe: boolean }>) => {
       const { selectedFriendId, friendIds, amount, paidByMe } = action.payload;
@@ -60,6 +48,6 @@ const friendsSlice = createSlice({
   }
 });
 
-export const { addFriend, removeFriend, toggleSelectedFriend, fetchFriends, updateFriendMoney } = friendsSlice.actions;
+export const { toggleSelectedFriend, updateFriendMoney } = friendsSlice.actions;
 
 export default friendsSlice.reducer;
