@@ -21,8 +21,6 @@ const HistoryList = () => {
       }
       fetchTransactions();
     }, [])
-
-  console.log(transactions);
     
   return (
     <div className={styles.main}>

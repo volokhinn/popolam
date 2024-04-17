@@ -14,8 +14,6 @@ const HomePage = () => {
 
   const selectedFriends = useSelector(selectSelectedFriends);
 
-  console.log(selectedFriends);
-
   useEffect(() => {
     async function fetchFriendsFromSupabase() {
       try {

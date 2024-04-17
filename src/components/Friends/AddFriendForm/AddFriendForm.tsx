@@ -23,8 +23,6 @@ const AddFriendForm = () => {
       const { error } = await supabase.from('friends').insert([
         { name: name[0].toUpperCase() + name.slice(1), img, money: 0 }
       ]);
-
-      console.log('Friend added');
       
       if (error) {
         console.error('Error adding friend:', error.message);

@@ -1,11 +1,11 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import { LineChart, PieChart, BarChart } from '@mui/x-charts';
-import { useSelector } from 'react-redux';
 import styles from './HistoryCharts.module.scss';
-import { selectTransactions } from '../../../store/slices/billSlice';
 import { Transaction } from '../../../store/types';
 import { format } from 'date-fns';
+
+import supabase from '../../../supabase';
 
 type HistoryTitleProps = {
   title: string
@@ -21,32 +21,14 @@ function HistoryTitle({title}:HistoryTitleProps) {
   );
 }
 
-function HistoryPieChart({transactions}:ChartProps) {
-  return (
-    <div></div>
-  )
-}
-
 function HistoryLineChart({ transactions }: ChartProps) {
-  const totalAmountByDate: { [key: string]: number } = {};
-
-  transactions.forEach(transaction => {
-    const date = format(new Date(transaction.date), 'MM.dd')
-    const amount = transaction.totalAmount;
-    totalAmountByDate[date] = (totalAmountByDate[date] || 0) + amount;
-  });
-  
-  const chartData = Object.keys(totalAmountByDate).map(date => ({
-    date: new Date(date),
-    totalAmount: totalAmountByDate[date]
-  }));
   
   return (
     <LineChart
-      xAxis={[{ min: chartData.map(data => data.date)[0], max: chartData.map(data => data.date).pop(), data: chartData.map(data => data.date), valueFormatter: (date) => format(date, 'MM.dd') }]}
+      xAxis={[{ data: transactions.map(data => data.date)}]}
       series={[
         {
-          data: chartData.map(data => data.totalAmount),
+          data: transactions.map(data => data.totalAmount),
         },
       ]}
       width={400}
@@ -57,7 +39,24 @@ function HistoryLineChart({ transactions }: ChartProps) {
 }
 
 const HistoryCharts = () => {
-  const transactions = useSelector(selectTransactions);
+
+  const [transactions, setTransactions] = useState<any[]>([])
+  console.log(transactions);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const { data, error } = await supabase.from('transactions').select('*')
+        if (error) {
+          throw error;
+        }
+        setTransactions(data || null);
+      } catch {
+        console.error('Error:');
+      }
+    }
+    fetchTransactions();
+  }, [])
 
   return (
     <div>

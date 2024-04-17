@@ -30,8 +30,6 @@ const FriendsList = ({friendsList}: any) => {
     fetchFriendsFromSupabase();
   }, []);
 
-  console.log(friends);
-
   const handleRemoveFriend = async (id: number) => {
     try {
 
