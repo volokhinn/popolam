@@ -98,7 +98,6 @@ const BillForm = () => {
       await Promise.all(selectedFriends.map(async (friend) => {
         const friendExpense = parseFloat(expenses[friend.id]);
         const amount = selectedFriendId === friend.id ? parseFloat(myExpense) : -friendExpense;
-        const paidByMe = selectedFriendId === null;
 
         if (amount !== 0) {
           const { error: friendUpdateError } = await supabase
@@ -109,32 +108,20 @@ const BillForm = () => {
             throw friendUpdateError;
           }
         }
-    
-        const { error: transactionError } = await supabase
-          .from('friend_transactions')
-          .insert([{ friend_id: friend.id, amount, paidBy: paidByMe }]);
-        if (transactionError) {
-          throw transactionError;
-        }
+
       }));
     
-      setMyExpense('');
-      setExpenses({});
-      setTotalAmount('');
-      setSplitEqually(false);
-      setSelectedFriendId(null);
-      setOpenSnackBar(true);
-      setTimeout(() => dispatch(clearSelectedFriends()), 3000);
     } catch (error) {
       console.error(error);
-      setMyExpense('');
-      setExpenses({});
-      setTotalAmount('');
-      setSplitEqually(false);
-      setSelectedFriendId(null);
-      setOpenSnackBar(true);
-      setTimeout(() => dispatch(clearSelectedFriends()), 3000);
     }
+
+    setMyExpense('');
+    setExpenses({});
+    setTotalAmount('');
+    setSplitEqually(false);
+    setSelectedFriendId(null);
+    setOpenSnackBar(true);
+    setTimeout(() => dispatch(clearSelectedFriends()), 3000);
   };
   
   
