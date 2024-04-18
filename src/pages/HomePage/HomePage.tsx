@@ -6,17 +6,24 @@ import Hint from "../../components/Hint/Hint";
 import BillForm from "../../components/BillForm/BillForm";
 import FriendsList from "../../components/Friends/FriendsList/FriendsList";
 import { selectSelectedFriends } from "../../store/slices/billSlice";
-import supabase from '../../supabase';
+import {supabaseClient} from '../../supabase';
 import { useSelector } from 'react-redux';
+import { useAuth } from '@clerk/clerk-react';
 
 const HomePage = () => {
   const [friends, setFriends] = useState<any[]>([]);
 
   const selectedFriends = useSelector(selectSelectedFriends);
 
+  const { getToken } = useAuth()
+
   useEffect(() => {
     async function fetchFriendsFromSupabase() {
       try {
+        const supabaseAccessToken = await getToken({ template: 'supabase' });
+
+        const supabase = await supabaseClient(supabaseAccessToken);
+
         const { data, error } = await supabase.from('friends').select('*');
         if (error) {
           throw error;

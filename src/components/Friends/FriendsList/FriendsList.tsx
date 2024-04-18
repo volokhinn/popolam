@@ -4,7 +4,8 @@ import styles from './FriendsList.module.scss';
 import FriendItem from '../FriendItem/FriendItem';
 import Snack from '../../UI/Snack/Snack';
 import { selectSelectedFriends, addSelectedFriend } from '../../../store/slices/billSlice';
-import supabase from '../../../supabase';
+import {supabaseClient} from '../../../supabase';
+import { useAuth } from '@clerk/clerk-react';
 import { Skeleton, Stack } from '@mui/material';
 
 const FriendsList = ({friendsList}: any) => {
@@ -12,11 +13,16 @@ const FriendsList = ({friendsList}: any) => {
   const dispatch = useDispatch();
   const selectedFriends = useSelector(selectSelectedFriends);
   const [friends, setFriends] = useState<any[]>([]);
-
+  const { getToken } = useAuth();
+  
   useEffect(() => {
     const fetchFriendsFromSupabase = async () => {
 
       try {
+        const supabaseAccessToken = await getToken({ template: 'supabase' });
+
+        const supabase = await supabaseClient(supabaseAccessToken);
+        
         const { data, error } = await supabase.from('friends').select('*');
         if (error) {
           throw error;
@@ -32,7 +38,10 @@ const FriendsList = ({friendsList}: any) => {
 
   const handleRemoveFriend = async (id: number) => {
     try {
+      const supabaseAccessToken = await getToken({ template: 'supabase' });
 
+      const supabase = await supabaseClient(supabaseAccessToken);
+      
       const { error } = await supabase.from('friends').delete().eq('id', id);
       if (error) {
         throw error;

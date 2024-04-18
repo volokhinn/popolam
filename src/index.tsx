@@ -33,7 +33,6 @@ if (!REACT_APP_CLERK_PUBLISHABLE_KEY) {
   throw new Error("Missing Publishable Key")
 }
 
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

@@ -4,13 +4,16 @@ import Button from '../../UI/Button/Button';
 import styles from './AddFriendForm.module.scss';
 import Snack from '../../UI/Snack/Snack';
 
-import supabase from '../../../supabase';
+import { supabaseClient } from '../../../supabase';
+import { useAuth } from '@clerk/clerk-react';
 
 const AddFriendForm = () => {
   const [name, setName] = useState('');
   const [img, setImg] = useState('');
   const [showError, setShowError] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
+
+  const { getToken } = useAuth();
 
   const handleAddFriend = async () => {
     if (name.length < 2 || name.length > 10) {
@@ -19,6 +22,10 @@ const AddFriendForm = () => {
     }
   
     try {
+      const supabaseAccessToken = await getToken({ template: 'supabase' });
+
+      const supabase = await supabaseClient(supabaseAccessToken);
+      console.log(supabaseAccessToken);
       setShowError(false);
       const { error } = await supabase.from('friends').insert([
         { name: name[0].toUpperCase() + name.slice(1), img, money: 0 }

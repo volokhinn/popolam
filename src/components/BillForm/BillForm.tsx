@@ -7,7 +7,8 @@ import styles from './BillForm.module.scss';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Button from '../UI/Button/Button';
 import Snack from '../UI/Snack/Snack';
-import supabase from '../../supabase';
+import {supabaseClient} from '../../supabase';
+import { useAuth } from '@clerk/clerk-react';
 
 const BillForm = () => {
   const selectedFriends = useSelector(selectSelectedFriends);
@@ -27,7 +28,7 @@ const BillForm = () => {
   const handleDeselectFriend = (id: number) => {
     dispatch(removeSelectedFriend(id));
   };
-
+  
   useEffect(() => {
     updateTotalAmount();
   }, [expenses, myExpense]);
@@ -52,8 +53,14 @@ const BillForm = () => {
     setSelectedFriendName(selectedFriend ? selectedFriend.name : null);
   };  
 
+  const { getToken } = useAuth()
+
   const addToHistory = async () => {
     try {
+      const supabaseAccessToken = await getToken({ template: 'supabase' });
+
+      const supabase = await supabaseClient(supabaseAccessToken);
+      
       setTotalAmountError('');
       setMyExpenseError('');
       setFriendExpensesErrors({});

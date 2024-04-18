@@ -13,7 +13,7 @@ const HistoryPage = () => {
             <HistoryList />
           </LeftSide>
           <RightSide>
-            <HistoryCharts />
+            {/* <HistoryCharts /> */}
           </RightSide>
         </>
       );

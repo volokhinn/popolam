@@ -5,7 +5,8 @@ import styles from './HistoryCharts.module.scss';
 import { Transaction } from '../../../store/types';
 import { format } from 'date-fns';
 
-import supabase from '../../../supabase';
+import {supabaseClient} from '../../../supabase';
+import { useAuth } from '@clerk/clerk-react';
 
 type HistoryTitleProps = {
   title: string
@@ -42,10 +43,14 @@ const HistoryCharts = () => {
 
   const [transactions, setTransactions] = useState<any[]>([])
   console.log(transactions);
-
+  const { getToken } = useAuth();
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
+        const supabaseAccessToken = await getToken({ template: 'supabase' });
+
+        const supabase = await supabaseClient(supabaseAccessToken);
+        
         const { data, error } = await supabase.from('transactions').select('*')
         if (error) {
           throw error;

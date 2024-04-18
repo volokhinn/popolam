@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import supabase from '../../supabase'
+import {supabaseClient} from '../../supabase'
+import { useAuth } from '@clerk/clerk-react';
 import { SpeedDial, SpeedDialAction } from '@mui/material'
 import { SignedIn, UserButton, useUser } from "@clerk/clerk-react";
 
@@ -14,8 +15,14 @@ const Header = () => {
         {icon: <SpeedDialAction color='primary' />, name: 'Очистить историю', action: () => clearHistory()},
     ]
 
+    const { getToken } = useAuth()
+
     const clearHistory = async () => {
         try {
+            const supabaseAccessToken = await getToken({ template: 'supabase' });
+
+            const supabase = await supabaseClient(supabaseAccessToken);
+
             const { error } = await supabase.from('transactions').delete().eq('id', '1')
             if (error) {
                 throw error;

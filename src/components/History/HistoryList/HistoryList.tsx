@@ -2,14 +2,20 @@ import { useState, useEffect } from 'react';
 import styles from './HistoryList.module.scss';
 import HistoryItem from '../HistoryItem/HistoryItem';
 import { Stack, Skeleton } from '@mui/material';
-import supabase from '../../../supabase';
+import {supabaseClient} from '../../../supabase';
+import { useAuth } from '@clerk/clerk-react';
 
 const HistoryList = () => {
     const [transactions, setTransactions] = useState<any[]>([]);
-
+    const { getToken } = useAuth()
+    
     useEffect(() => {
       const fetchTransactions = async () => {
         try {
+          const supabaseAccessToken = await getToken({ template: 'supabase' });
+
+          const supabase = await supabaseClient(supabaseAccessToken);
+
           const { data, error } = await supabase.from('transactions').select('*')
           if (error) {
             throw error;
