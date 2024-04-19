@@ -19,12 +19,22 @@ function HistoryTitle({ title }: HistoryChartsProps) {
 }
 
 function HistoryLineChart({ transactions }: ChartProps) {
+  const totalAmountByDate: { [key: string]: number } = {};
+
+  transactions.forEach(transaction => {
+    const date = format(new Date(transaction.date), 'MM.dd')
+    const amount = transaction.totalAmount;
+    totalAmountByDate[date] = (totalAmountByDate[date] || 0) + amount;
+  });
+
+  const totalAmount = Object.values(totalAmountByDate);
+
   console.log(transactions.map((data) => format(data.date, 'dd.MM')))
   return (
     <LineChart
       xAxis={[{ data: transactions.map((data) => format(data.date, 'dd.MM'))}]}
-      series={[{ data: transactions.map((data) => data.totalAmount) }]}
-      width={400}
+      series={[{ data: totalAmount }]}
+      width={1000}
       height={400}
       colors={['#E52F5B']}
     />
