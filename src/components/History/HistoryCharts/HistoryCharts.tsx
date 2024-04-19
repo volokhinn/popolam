@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
 import { LineChart } from '@mui/x-charts';
 import styles from './HistoryCharts.module.scss';
-import { Transaction } from '../../../store/types';
 import { format } from 'date-fns';
-import { supabaseClient } from '../../../supabase';
-import { useAuth } from '@clerk/clerk-react';
+import { Transaction } from '../../../store/types';
 
-type HistoryChartsProps = {
+type HistoryTitleProps = {
   title: string;
 };
 
@@ -14,7 +11,7 @@ type ChartProps = {
   transactions: Transaction[];
 };
 
-function HistoryTitle({ title }: HistoryChartsProps) {
+function HistoryTitle({ title }: HistoryTitleProps) {
   return <div>{title}</div>;
 }
 
@@ -29,10 +26,11 @@ function HistoryLineChart({ transactions }: ChartProps) {
 
   const totalAmount = Object.values(totalAmountByDate);
 
-  console.log(transactions.map((data) => format(data.date, 'dd.MM')))
+  const xAxisTransactions = transactions.map((data) => format(data.date, 'dd.MM'));
+
   return (
     <LineChart
-      xAxis={[{ data: transactions.map((data) => format(data.date, 'dd.MM'))}]}
+      xAxis={[{ data: xAxisTransactions, tickInterval: xAxisTransactions }]}
       series={[{ data: totalAmount }]}
       width={1000}
       height={400}
@@ -41,26 +39,11 @@ function HistoryLineChart({ transactions }: ChartProps) {
   );
 }
 
-const HistoryCharts = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const { getToken } = useAuth();
+type HistoryChartsProps = {
+  transactions: Transaction[];
+}
 
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const supabaseAccessToken = await getToken({ template: 'supabase' });
-        const supabase = await supabaseClient(supabaseAccessToken);
-        const { data, error } = await supabase.from('transactions').select('*');
-        if (error) {
-          throw error;
-        }
-        setTransactions(data || []);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    };
-    fetchTransactions();
-  }, [getToken]);
+const HistoryCharts = ({transactions}: HistoryChartsProps) => {
 
   return (
     <div>

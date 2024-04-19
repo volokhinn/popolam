@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import {supabaseClient} from '../../supabase'
 import { useAuth } from '@clerk/clerk-react';
 import { SpeedDial, SpeedDialAction } from '@mui/material'
@@ -10,6 +9,7 @@ import {SpeedDialIcon} from '@mui/material';
 
 const Header = () => {
     const user = useUser();
+    const userId = user.user ? user.user.id : '';
 
     const actions = [
         {icon: <SpeedDialAction color='primary' />, name: 'Очистить историю', action: () => clearHistory()},
@@ -23,7 +23,7 @@ const Header = () => {
 
             const supabase = await supabaseClient(supabaseAccessToken);
 
-            const { error } = await supabase.from('transactions').delete().eq('id', '1')
+            const { error } = await supabase.from('transactions').delete().eq('user_id', userId)
             if (error) {
                 throw error;
             }

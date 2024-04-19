@@ -8,9 +8,8 @@ import { selectSelectedFriends } from "../../store/slices/billSlice";
 import { useSelector } from 'react-redux';
 
 const HomePage = () => {
-
   const selectedFriends = useSelector(selectSelectedFriends);
-
+  
   return (
     <>
       <LeftSide>
