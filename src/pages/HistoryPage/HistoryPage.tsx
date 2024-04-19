@@ -1,4 +1,3 @@
-import styles from './HistoryPage.module.scss'
 import LeftSide from '../../components/LeftSide/LeftSide';
 import RightSide from '../../components/RightSide/RightSide';
 import HistoryList from '../../components/History/HistoryList/HistoryList';
@@ -13,7 +12,7 @@ const HistoryPage = () => {
             <HistoryList />
           </LeftSide>
           <RightSide>
-            {/* <HistoryCharts /> */}
+            <HistoryCharts />
           </RightSide>
         </>
       );

@@ -7,12 +7,13 @@ import { selectSelectedFriends, addSelectedFriend } from '../../../store/slices/
 import {supabaseClient} from '../../../supabase';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { Skeleton, Stack } from '@mui/material';
+import { Friend } from '../../../store/types';
 
-const FriendsList = ({friendsList}: any) => {
+const FriendsList = () => {
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const dispatch = useDispatch();
   const selectedFriends = useSelector(selectSelectedFriends);
-  const [friends, setFriends] = useState<any[]>([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
   const { getToken } = useAuth();
 
   const user = useUser();
@@ -37,7 +38,7 @@ const FriendsList = ({friendsList}: any) => {
     }
     
     fetchFriendsFromSupabase();
-  }, []);
+  }, [userId, getToken]);
 
   const handleRemoveFriend = async (id: number) => {
     try {
@@ -66,7 +67,7 @@ const FriendsList = ({friendsList}: any) => {
 
   return (
     <div className={styles.main}>
-      {/* {friends.length === 0 && (
+      {friends.length === 0 && (
         <Stack spacing={2}>
           <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
           <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
@@ -74,7 +75,7 @@ const FriendsList = ({friendsList}: any) => {
           <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
           <Skeleton variant="rounded" width="100%" height={100} sx={{borderRadius: '20px'}} />
         </Stack>
-      )} */}
+      )}
       {Array.isArray(friends) && friends.length > 0 ? (
         friends.map((friend) => (
           <FriendItem

@@ -1,37 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Grid } from '@mui/material';
-import { LineChart, PieChart, BarChart } from '@mui/x-charts';
+import { LineChart } from '@mui/x-charts';
 import styles from './HistoryCharts.module.scss';
 import { Transaction } from '../../../store/types';
 import { format } from 'date-fns';
-
-import {supabaseClient} from '../../../supabase';
+import { supabaseClient } from '../../../supabase';
 import { useAuth } from '@clerk/clerk-react';
 
-type HistoryTitleProps = {
-  title: string
-}
+type HistoryChartsProps = {
+  title: string;
+};
 
 type ChartProps = {
-  transactions: Transaction[]
-}
+  transactions: Transaction[];
+};
 
-function HistoryTitle({title}:HistoryTitleProps) {
-  return (
-    <div>{title}</div>
-  );
+function HistoryTitle({ title }: HistoryChartsProps) {
+  return <div>{title}</div>;
 }
 
 function HistoryLineChart({ transactions }: ChartProps) {
-  
+  console.log(transactions.map((data) => format(data.date, 'dd.MM')))
   return (
     <LineChart
-      xAxis={[{ data: transactions.map(data => data.date)}]}
-      series={[
-        {
-          data: transactions.map(data => data.totalAmount),
-        },
-      ]}
+      xAxis={[{ data: transactions.map((data) => format(data.date, 'dd.MM'))}]}
+      series={[{ data: transactions.map((data) => data.totalAmount) }]}
       width={400}
       height={400}
       colors={['#E52F5B']}
@@ -40,28 +32,25 @@ function HistoryLineChart({ transactions }: ChartProps) {
 }
 
 const HistoryCharts = () => {
-
-  const [transactions, setTransactions] = useState<any[]>([])
-  console.log(transactions);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const { getToken } = useAuth();
+
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
         const supabaseAccessToken = await getToken({ template: 'supabase' });
-
         const supabase = await supabaseClient(supabaseAccessToken);
-        
-        const { data, error } = await supabase.from('transactions').select('*')
+        const { data, error } = await supabase.from('transactions').select('*');
         if (error) {
           throw error;
         }
-        setTransactions(data || null);
-      } catch {
-        console.error('Error:');
+        setTransactions(data || []);
+      } catch (error) {
+        console.error('Error:', error);
       }
-    }
+    };
     fetchTransactions();
-  }, [])
+  }, [getToken]);
 
   return (
     <div>
@@ -72,6 +61,6 @@ const HistoryCharts = () => {
       <div>HistoryCharts</div>
     </div>
   );
-}
+};
 
 export default HistoryCharts;

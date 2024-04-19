@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import styles from './HistoryList.module.scss';
 import HistoryItem from '../HistoryItem/HistoryItem';
 import { Stack, Skeleton } from '@mui/material';
+
 import {supabaseClient} from '../../../supabase';
 import { useAuth } from '@clerk/clerk-react';
+import { Transaction } from '../../../store/types';
 
 const HistoryList = () => {
-    const [transactions, setTransactions] = useState<any[]>([]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const { getToken } = useAuth()
     
     useEffect(() => {
@@ -26,7 +28,7 @@ const HistoryList = () => {
         }
       }
       fetchTransactions();
-    }, [])
+    }, [getToken])
     
   return (
     <div className={styles.main}>
