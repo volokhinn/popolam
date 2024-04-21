@@ -9,10 +9,13 @@ import Button from '../UI/Button/Button';
 import Snack from '../UI/Snack/Snack';
 import {supabaseClient} from '../../supabase';
 import { useAuth } from '@clerk/clerk-react';
+import { useAppContext } from '../../AppContext';
 
 const BillForm = () => {
   const selectedFriends = useSelector(selectSelectedFriends);
   const dispatch = useDispatch();
+
+  const { fetchFriendsFromSupabase } = useAppContext();
   
   const [splitEqually, setSplitEqually] = useState(false);
   const [totalAmount, setTotalAmount] = useState('');
@@ -32,6 +35,15 @@ const BillForm = () => {
   useEffect(() => {
     updateTotalAmount();
   }, [expenses, myExpense]);
+
+  const updateFriendsList = async () => {
+    try {
+      await fetchFriendsFromSupabase();
+    } catch (error) {
+      console.error('Error updating friends list:', error);
+    }
+  };
+  
   
   const handleExpenseChange = (friendId: number, value: string) => {
     setExpenses((prevState) => ({
@@ -117,7 +129,7 @@ const BillForm = () => {
         }
 
       }));
-    
+      updateFriendsList();
     } catch (error) {
       console.error(error);
     }

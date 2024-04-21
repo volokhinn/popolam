@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material';
 import { Container } from '@mui/material';
 import './index.css'
 import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut } from '@clerk/clerk-react';
+import { AppProvider } from './AppContext';
 
 const theme = createTheme({
   palette: {
@@ -37,16 +38,18 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <ClerkProvider publishableKey={REACT_APP_CLERK_PUBLISHABLE_KEY}>
-    <ThemeProvider theme={theme}>
-      <SignedIn>
-        <Container maxWidth="xl">
-          <App />
-        </Container>
-      </SignedIn>
-      <SignedOut>
-        <RedirectToSignIn />
-      </SignedOut>
-    </ThemeProvider>
-  </ClerkProvider>
+    <ClerkProvider publishableKey={REACT_APP_CLERK_PUBLISHABLE_KEY}>
+      <AppProvider>
+        <ThemeProvider theme={theme}>
+          <SignedIn>
+            <Container maxWidth="xl">
+              <App />
+            </Container>
+          </SignedIn>
+          <SignedOut>
+            <RedirectToSignIn />
+          </SignedOut>
+        </ThemeProvider>
+      </AppProvider>
+    </ClerkProvider>
 );
