@@ -59,7 +59,7 @@ const AddFriendForm = () => {
         <input
           type="file"
           name="image"
-          accept="image/jpeg, image/png"
+          accept="image/jpeg, image/png, image/jpg"
           hidden
           onChange={handleFileSelected}
         />

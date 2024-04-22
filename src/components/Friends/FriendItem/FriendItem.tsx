@@ -17,10 +17,10 @@ type FriendItemProps = {
 
 const FriendItem = ({ id, name, money, img, isSelected, onRemoveFriend, onAddFriendToBill }: FriendItemProps) => {
   const [hovered, setHovered] = useState(false);
-
+  console.log(img);
   const renderUserImage = () => {
     if (img) {
-      return <img src={img} alt="img" className={styles.img} />;
+      return <img src={img} alt="avatar" className={styles.img} />;
     } else {
       const initials = name.split(' ').map((word) => word.charAt(0)).join('');
       return <div className={styles.initials}>{initials}</div>;

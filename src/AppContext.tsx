@@ -110,16 +110,28 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
   const handleRemoveFriend = async (id: number) => {
     try {
-      const { error } = await supabase.from('friends').delete().eq('id', id);
-      if (error) {
-        throw error;
-      }
 
-      setFriends((prevFriends: Friend[]) => prevFriends.filter((friend) => friend.id !== id));
+      const friend = friends.find(friend => friend.id === id);
+      const avatarPath = friend?.img;
+  
+      const { error: removeFriendError } = await supabase.from('friends').delete().eq('id', id);
+      if (removeFriendError) {
+        throw removeFriendError;
+      }
+  
+      if (avatarPath) {
+        const filename = avatarPath.split('/').pop();
+        const { error: removeAvatarError } = await supabase.storage.from('avatars').remove([`avatars/${filename}`]);
+        if (removeAvatarError) {
+          throw removeAvatarError;
+        }
+      }
+  
+      setFriends(prevFriends => prevFriends.filter(friend => friend.id !== id));
     } catch (error) {
       console.error('Error removing friend:', error);
     }
-  };
+  };  
 
   const handleAddFriend = async (name: string, file: File | null) => {
     if (name.length < 2 || name.length > 10) {

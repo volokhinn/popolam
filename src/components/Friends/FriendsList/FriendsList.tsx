@@ -14,7 +14,6 @@ const FriendsList = () => {
   const selectedFriends = useSelector(selectSelectedFriends);
 
   const { friends, handleRemoveFriend, fetchFriendsFromSupabase, supabase } = useAppContext();
-  console.log(friends);
   useEffect(() => {
     if (supabase) {
       fetchFriendsFromSupabase();
