@@ -17,7 +17,7 @@ type AppContextType = {
   clearHistory: () => Promise<void>;
   handleRemoveFriend: (id: number) => Promise<void>;
   handleAddFriend: (name: string, file: File | null)  => void;
-  supabase: any;
+  supabase: ReturnType<typeof createClient>;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -115,7 +115,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         throw error;
       }
 
-      setFriends((prevFriends: Friend[]) => prevFriends.filter((friend: Friend) => friend.id !== id));
+      setFriends((prevFriends: Friend[]) => prevFriends.filter((friend) => friend.id !== id));
     } catch (error) {
       console.error('Error removing friend:', error);
     }
@@ -142,8 +142,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       ]);
   
       if (error) {
-        console.error('Error adding friend:', error.message);
-        return;
+        throw error;
       }
 
       } else {
@@ -152,8 +151,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         ]);
 
         if (error) {
-          console.error('Error adding friend:', error.message);
-          return;
+          throw error;
         }
       }
     } catch (error) {
