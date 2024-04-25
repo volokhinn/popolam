@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, Alert } from '@mui/material';
+import { TextField, Alert, CircularProgress } from '@mui/material';
 import { Button as ButtonMUI } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import styles from './AddFriendForm.module.scss';
@@ -12,25 +12,34 @@ const AddFriendForm = () => {
   const [name, setName] = useState('');
   const [file, setfile] = useState<File | null>(null);
   const [showError, setShowError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const { handleAddFriend } = useAppContext();
 
-  const handleAddForm = () => {
+  const handleAddForm = async () => {
     if (name.length < 2 || name.length > 10) {
       setShowError(true);
       return;
     }
 
-    if (!file) {
-      handleAddFriend(name, null);
-    } else {
-      handleAddFriend(name, file);
-    }
+    setLoading(true);
 
-    setName('');
-    setfile(null);
-    setOpenSnackBar(true);
+    try {
+      if (!file) {
+        await handleAddFriend(name, null);
+      } else {
+        await handleAddFriend(name, file);
+      }
+
+      setName('');
+      setfile(null);
+      setOpenSnackBar(true);
+    } catch (error) {
+      console.error('Error adding friend:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +74,7 @@ const AddFriendForm = () => {
         />
       </ButtonMUI>
       <div className={styles.btn}>
-        <Button buttontext="Добавить" onClick={handleAddForm} />
+        {loading ? <CircularProgress className={styles.loading} /> : <Button buttontext="Добавить" onClick={handleAddForm} />}
       </div>
       <Snack title="Друг успешно добавлен" openSnackBar={openSnackBar} setOpenSnackBar={setOpenSnackBar} />
     </div>

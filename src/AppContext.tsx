@@ -140,28 +140,32 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   
     try {
       if (file) {
-        const filename = `${Date.now()}_${file.name}`
-      const { data } = await supabase.storage.from('avatars').upload(`/avatars/${filename}`, file, {
-        upsert: true,
-        contentType: 'image/*'
-      });
-      
-
-      const filepath = data?.path;
-
-      const { error } = await supabase.from('friends').insert([
-        { name: name[0].toUpperCase() + name.slice(1), img: `${BUCKET_URL}/avatars/${filepath}`, money: 0 }
-      ]);
+        const filename = `${Date.now()}_${file.name}`;
+        const { data, error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(`/avatars/${filename}`, file, {
+            upsert: true,
+            contentType: 'image/*'
+          });
   
-      if (error) {
-        throw error;
-      }
+        if (uploadError) {
+          throw uploadError;
+        }
 
+        const filepath = data?.path;
+  
+        const { error } = await supabase.from('friends').insert([
+          { name: name[0].toUpperCase() + name.slice(1), img: `${BUCKET_URL}/avatars/${filepath}`, money: 0 }
+        ]);
+  
+        if (error) {
+          throw error;
+        }
       } else {
         const { error } = await supabase.from('friends').insert([
           { name: name[0].toUpperCase() + name.slice(1), img: '', money: 0 }
         ]);
-
+  
         if (error) {
           throw error;
         }
@@ -170,7 +174,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       console.error('Error adding friend:', error);
     }
   };
-
+  
   useEffect(() => {
     if (supabase) {
       fetchFriendsFromSupabase();
