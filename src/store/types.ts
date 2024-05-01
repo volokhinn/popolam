@@ -25,6 +25,7 @@ export interface Transaction {
   }[];
   myAmount: string;
   paidBy: string | null;
+  id: number;
 }
 
 export interface FriendsState {

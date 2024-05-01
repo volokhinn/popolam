@@ -15,7 +15,7 @@ type AppContextType = {
   clearFriends: () => Promise<void>;
   fetchTransactions: () => Promise<void>;
   clearHistory: () => Promise<void>;
-  handleRemoveFriend: (id: number) => Promise<void>;
+  handleRemoveFriend: (id: number, deleteTransactions: boolean) => Promise<void>;
   handleAddFriend: (name: string, file: File | null)  => void;
   supabase: ReturnType<typeof createClient>;
 };
@@ -109,10 +109,23 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   };
 
   const handleRemoveFriend = async (id: number) => {
+    
     try {
-
       const friend = friends.find(friend => friend.id === id);
-      const avatarPath = friend?.img;
+      const avatarPath = friend?.img || '';
+  
+      const soloTransactions = transactions.filter(transaction =>
+        !!transaction.friendNames &&
+        transaction.friendNames.length === 1 && 
+        transaction.friendNames.includes(friend?.name || '')
+      );      
+
+      for (const transaction of soloTransactions) {
+        const { error: removeTransactionError } = await supabase.from('transactions').delete().eq('id', transaction.id);
+        if (removeTransactionError) {
+          throw removeTransactionError;
+        }
+      }
   
       const { error: removeFriendError } = await supabase.from('friends').delete().eq('id', id);
       if (removeFriendError) {
