@@ -60,23 +60,27 @@ const Header = () => {
     return (
         <div className={styles.header}>
             <div className={styles.header_content}>
-                <div className={styles.username}>
-                    {user.user?.username}
-                </div>
-                <SignedIn>
-                    <UserButton />
-                </SignedIn>
-                <div style={{ position: 'relative' }}>
-                    <SpeedDial ariaLabel='SpeedDial' icon={<SpeedDialIcon />} direction='down' sx={{ position: 'absolute', top: '-18px', '& .MuiFab-primary': { width: 35, height: 35 } }}>
-                        {actions.map((action) => (
-                            <SpeedDialAction
-                                key={action.name}
-                                icon={action.icon}
-                                tooltipTitle={action.name}
-                                onClick={action.action}
-                            />
-                        ))}
-                    </SpeedDial>
+                <div className={styles.header_content_wrap}>
+                    <div className={styles.user}>
+                        <div className={styles.username}>
+                            {user.user?.username}
+                        </div>
+                        <SignedIn>
+                            <UserButton />
+                        </SignedIn>
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                        <SpeedDial ariaLabel='SpeedDial' transitionDuration={0} icon={<SpeedDialIcon />} direction='down' sx={{ position: 'absolute', top: '-18px', '& .MuiFab-primary': { width: 35, height: 35 } }}>
+                            {actions.map((action) => (
+                                <SpeedDialAction
+                                    key={action.name}
+                                    icon={action.icon}
+                                    tooltipTitle={action.name}
+                                    onClick={action.action}
+                                />
+                            ))}
+                        </SpeedDial>
+                    </div>
                 </div>
             </div>
             <Dialog

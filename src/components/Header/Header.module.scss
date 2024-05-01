@@ -2,12 +2,19 @@
     position: relative;
 
     &_content {
-        display: flex;
-        align-items: center;
-        gap: 20px;
         position: absolute;
         right: 50px;
         top: 10px;
+
+        &_wrap {
+            display: flex;
+            align-items: center;
+            width: 150px;
+            padding: 10px;
+            gap: 20px;
+            background-color: #F5F5F5;
+            border-radius: 20px;
+        }
     }
 }
 
@@ -15,4 +22,10 @@
     margin-right: 10px;
     user-select: none;
     font-weight: 600;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }

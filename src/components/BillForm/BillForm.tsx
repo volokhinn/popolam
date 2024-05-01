@@ -140,7 +140,7 @@ const BillForm = () => {
     setSplitEqually(false);
     setSelectedFriendId(null);
     setOpenSnackBar(true);
-    setTimeout(() => dispatch(clearSelectedFriends()), 3000);
+    setTimeout(() => dispatch(clearSelectedFriends()), 1000);
   };
   
   
